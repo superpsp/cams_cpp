@@ -11,6 +11,9 @@ endif()
 
 project (cams LANGUAGES CXX)
 
+# set(CMAKE_CXX_STANDARD 11)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Add source to this project's executable.
 add_executable (cams src/cams.cpp)
 
