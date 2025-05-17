@@ -19,7 +19,7 @@ add_executable (
 	cams src/cams.cpp
 	"src/tools.h"  "src/tools.cpp"
 	"src/loggerpsp.h"
- "src/loggerpsp.cpp")
+ "src/loggerpsp.cpp" "src/parameters.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET cams PROPERTY CXX_STANDARD 20)

@@ -242,3 +242,11 @@ std::string Tools::getTime(short int shiftHours, short int shiftMinutes) {
         + padl(std::to_string(timeInfo->tm_sec), 2, '0')
         ;
 }
+
+ToolsDestructor::~ToolsDestructor()
+{
+}
+
+void ToolsDestructor::initialize(Tools* p)
+{
+}

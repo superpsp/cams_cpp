@@ -2,6 +2,14 @@
 
 class Tools;
 
+class ToolsDestructor {
+public:
+    ~ToolsDestructor();
+    void initialize(Tools* p);
+private:
+    Tools* instance;
+};
+
 class Tools {
     public:
         struct timeZoneShift {
@@ -27,7 +35,9 @@ class Tools {
             , padr(std::string source, size_t resultLength, char character = ' ')
             // TODO (psp#1#): To move values to a constant(s)
             , getTime(short int shiftHours = 99, short int shiftMinutes = 0); // Local time by default
-    protected:
+protected:
+    friend class ToolsDestructor;
     private:
         static Tools* instance;
+        static Tools destructor;
 };

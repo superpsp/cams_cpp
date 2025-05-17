@@ -3,11 +3,11 @@
 class LoggerPSP;
 
 class LoggerPSPDestructor {
-public:
-    ~LoggerPSPDestructor();
-    void initialize(LoggerPSP* p);
-private:
-    LoggerPSP* instance;
+    public:
+        ~LoggerPSPDestructor();
+        void initialize(LoggerPSP* p);
+    private:
+        LoggerPSP* instance;
 };
 
 class LoggerPSP {
