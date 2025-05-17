@@ -1,5 +1,9 @@
 #include <iostream>
+#include "loggerpsp.h"
 
 int main(int argc, char* argv[]) {
-	std::cout << "Hello world" << std::endl;
+	LoggerPSP& log = LoggerPSP::getInstance();
+	log.setLogLevel(log.LOG_LEVEL_INFO);
+	log.logInfo("Project is started");
+	log.logInfo("Project is completed");
 }

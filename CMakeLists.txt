@@ -15,7 +15,11 @@ project (cams LANGUAGES CXX)
 # set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add source to this project's executable.
-add_executable (cams src/cams.cpp)
+add_executable (
+	cams src/cams.cpp
+	"src/tools.h"  "src/tools.cpp"
+	"src/loggerpsp.h"
+ "src/loggerpsp.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET cams PROPERTY CXX_STANDARD 20)
