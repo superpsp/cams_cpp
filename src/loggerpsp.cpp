@@ -65,3 +65,7 @@ void LoggerPSP::logDebug(std::string message) {
     }
 }
 
+void LoggerPSP::logText(std::string message) {
+    std::cout << message << std::endl;
+}
+

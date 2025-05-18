@@ -27,7 +27,8 @@ class LoggerPSP {
             logError(std::string message),
             logWarning(std::string message),
             logInfo(std::string message),
-            logDebug(std::string message);
+            logDebug(std::string message),
+            logText(std::string message);
     protected:
         LoggerPSP() {}
         LoggerPSP(const LoggerPSP&);

@@ -6,12 +6,11 @@
 #define APPPARAMETERS AppParameters::getInstance()
 
 int main(int argc, char* argv[]) {
-	LOGGER.setLogLevel(LoggerPSP::LOG_LEVEL_DEBUG);
-	LOGGER.logInfo("cams is started");
+	LOGGER.logText("main: cams is started");
 
-	APPPARAMETERS.setParameters();
-
+	APPPARAMETERS.setParameters(argc, argv);
 	AppParametersDestructor();
+
 	ToolsDestructor();
 	LoggerPSPDestructor();
 }

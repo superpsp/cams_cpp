@@ -11,7 +11,8 @@ class AppParametersDestructor {
 class AppParameters {
     public:
         static AppParameters& getInstance();
-        void setParameters();
+        void setParameters(int argc, char* argv[]);
+        void printHelp();
     protected:
         AppParameters() {}
         AppParameters(const AppParameters&);
