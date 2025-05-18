@@ -17,7 +17,7 @@ project (cams LANGUAGES CXX)
 # Add source to this project's executable.
 add_executable (
 	cams src/cams.cpp
-	"src/TOOLS.h" "src/TOOLS.cpp"
+	"src/tools.h" "src/tools.cpp"
 	"src/loggerpsp.h" "src/loggerpsp.cpp"
 	"src/parameters.h" "src/parameters.cpp"
 	)

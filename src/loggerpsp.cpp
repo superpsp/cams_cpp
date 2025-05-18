@@ -4,23 +4,23 @@
 
 #define TOOLS Tools::getInstance()
 
-LoggerPSP *instance = 0;
+LoggerPSP *loggerInstance = 0;
 
 LoggerPSPDestructor::~LoggerPSPDestructor() {
     std::cout << "[DEBUG]" << " " << "LoggerPSPDestructor: Instance deleted" << std::endl;
-    delete instance;
+    delete loggerInstance;
 }
 
 void LoggerPSPDestructor::initialize(LoggerPSP* p) {
-    instance = p;
+    loggerInstance = p;
 }
 
 LoggerPSP &LoggerPSP::getInstance() {
-    if (!instance) {
-        instance = new LoggerPSP();
+    if (!loggerInstance) {
+        loggerInstance = new LoggerPSP();
         std::cout << TOOLS.getTime() << " " << "[DEBUG]" << " " << "LoggerPSP: Instance created" << std::endl;
     }
-    return *instance;
+    return *loggerInstance;
 }
 
 void LoggerPSP::setLogLevel(short level) {

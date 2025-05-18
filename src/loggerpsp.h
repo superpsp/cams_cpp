@@ -7,7 +7,7 @@ class LoggerPSPDestructor {
         ~LoggerPSPDestructor();
         void initialize(LoggerPSP *p);
     private:
-        LoggerPSP* instance;
+        LoggerPSP* loggerInstance;
 };
 
 class LoggerPSP {
@@ -39,6 +39,5 @@ class LoggerPSP {
         std::string logFileName;
 
         void logPrint(std::string message, std::string level);
-        //static LoggerPSP *instance;
         static LoggerPSPDestructor destructor;
 };

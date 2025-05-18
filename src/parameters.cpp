@@ -1,26 +1,28 @@
 #include "parameters.h"
+#include "loggerpsp.h"
+
 #define LOGGER LoggerPSP::getInstance()
 
-AppParameters* instance = 0;
+AppParameters* appParametersInstance = 0;
 
 AppParametersDestructor::~AppParametersDestructor() {
-	//LOGGER.logDebug("AppParametersDestructor: Instance deleted");
-	delete instance;
+	LOGGER.logDebug("AppParametersDestructor: Instance deleted");
+	delete appParametersInstance;
 }
 
 void AppParametersDestructor::initialize(AppParameters* p) {
-	instance = p;
+	appParametersInstance = p;
 }
 
 AppParameters& AppParameters::getInstance() {
-	if (!instance) {
-		instance = new AppParameters();
-		//LOGGER.logDebug("AppParameters: Instance created");
+	if (!appParametersInstance) {
+		appParametersInstance = new AppParameters();
+		LOGGER.logDebug("AppParameters: Instance created");
 	}
-	return *instance;
+	return *appParametersInstance;
 }
 
 void AppParameters::setParameters() {
-	//LOGGER.logDebug("AppParameters::setParameters: Start");
-	//LOGGER.logDebug("AppParameters::setParameters: End");
+	LOGGER.logDebug("AppParameters::setParameters: Start");
+	LOGGER.logDebug("AppParameters::setParameters: End");
 }

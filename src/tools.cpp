@@ -4,23 +4,23 @@
 
 #define LOGGER LoggerPSP::getInstance()
 
-Tools* instance = 0;
+Tools* toolsInstance = 0;
 
 ToolsDestructor::~ToolsDestructor() {
-    LOGGER.logDebug("ToolsDestructor: Instance deleted");
-    delete instance;
+    LOGGER.logDebug("ToolsDestructor: toolsInstance deleted");
+    delete toolsInstance;
 }
 
 void ToolsDestructor::initialize(Tools* p) {
-    instance = p;
+    toolsInstance = p;
 }
 
 Tools& Tools::getInstance() {
-    if (!instance) {
-        instance = new Tools();
+    if (!toolsInstance) {
+        toolsInstance = new Tools();
         LOGGER.logDebug("Tools: Instance created");
     }
-    return *instance;
+    return *toolsInstance;
 }
 
 bool Tools::checkIP(std::string ip) {

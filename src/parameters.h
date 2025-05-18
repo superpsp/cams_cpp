@@ -5,7 +5,7 @@ class AppParametersDestructor {
         ~AppParametersDestructor();
         void initialize(AppParameters* p);
     private:
-        AppParameters* instance;
+        AppParameters* appParametersInstance;
 };
 
 class AppParameters {
@@ -19,7 +19,6 @@ class AppParameters {
         ~AppParameters() {}
         friend class AppParametersDestructor;
     private:
-        //static AppParameters* instance;
         static AppParametersDestructor destructor;
 
 };

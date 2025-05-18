@@ -7,7 +7,7 @@ public:
     ~ToolsDestructor();
     void initialize(Tools* p);
 private:
-    Tools* instance;
+    Tools* toolsInstance;
 };
 
 class Tools {
@@ -42,7 +42,6 @@ class Tools {
         ~Tools() {}
     friend class ToolsDestructor;
     private:
-        //static Tools *instance;
         static ToolsDestructor destructor;
 
 };
