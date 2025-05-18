@@ -1,8 +1,14 @@
 #include "loggerpsp.h"
+#include "parameters.h"
+#include "tools.h"
+
+#define LOGGER LoggerPSP::getInstance()
+#define APPPARAMETERS AppParameters::getInstance()
 
 int main(int argc, char* argv[]) {
-	LoggerPSP& log = LoggerPSP::getInstance();
-	log.setLogLevel(log.LOG_LEVEL_INFO);
-	log.logInfo("cams is started");
-	log.logInfo("cams is completed");
+	LOGGER.setLogLevel(LoggerPSP::LOG_LEVEL_INFO);
+	LOGGER.logInfo("cams is started");
+
+	//AppParametersDestructor();
+	LOGGER.logInfo("cams is completed");
 }

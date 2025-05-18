@@ -1,11 +1,24 @@
-#include "tools.h"
 #include <time.h>
+#include "tools.h"
+#include "loggerpsp.h"
 
-Tools* Tools::instance = 0;
+#define LOGGER LoggerPSP::getInstance()
+
+Tools* instance = 0;
+
+ToolsDestructor::~ToolsDestructor() {
+    LOGGER.logDebug("ToolsDestructor: Instance deleted");
+    delete instance;
+}
+
+void ToolsDestructor::initialize(Tools* p) {
+    instance = p;
+}
 
 Tools& Tools::getInstance() {
     if (!instance) {
         instance = new Tools();
+        LOGGER.logDebug("Tools: Instance created");
     }
     return *instance;
 }
@@ -241,12 +254,4 @@ std::string Tools::getTime(short int shiftHours, short int shiftMinutes) {
         + ":"
         + padl(std::to_string(timeInfo->tm_sec), 2, '0')
         ;
-}
-
-ToolsDestructor::~ToolsDestructor()
-{
-}
-
-void ToolsDestructor::initialize(Tools* p)
-{
 }

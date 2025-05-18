@@ -1,12 +1,13 @@
+#include <iostream>
 #include "loggerpsp.h"
 #include "tools.h"
-#include <iostream>
 
+#define TOOLS Tools::getInstance()
 
-LoggerPSP* LoggerPSP::instance = 0;
-LoggerPSPDestructor LoggerPSP::destructor;
+LoggerPSP *instance = 0;
 
 LoggerPSPDestructor::~LoggerPSPDestructor() {
+    std::cout << "[DEBUG]" << " " << "LoggerPSPDestructor: Instance deleted" << std::endl;
     delete instance;
 }
 
@@ -14,9 +15,10 @@ void LoggerPSPDestructor::initialize(LoggerPSP* p) {
     instance = p;
 }
 
-LoggerPSP& LoggerPSP::getInstance() {
+LoggerPSP &LoggerPSP::getInstance() {
     if (!instance) {
         instance = new LoggerPSP();
+        std::cout << TOOLS.getTime() << " " << "[DEBUG]" << " " << "LoggerPSP: Instance created" << std::endl;
     }
     return *instance;
 }
@@ -34,29 +36,31 @@ void LoggerPSP::setLogFileName(std::string fileName) {
 }
 
 void LoggerPSP::logPrint(std::string message, std::string level) {
-    std::cout << Tools::getTime() << " " << level << " " << message << std::endl;
+    if (LOG_DEST_FILE == 1) {
+        std::cout << TOOLS.getTime() << " " << level << " " << message << std::endl;
+    }
 }
 
 void LoggerPSP::logError(std::string message) {
-    if (this->logLevel >= LoggerPSP::LOG_LEVEL_ERROR) {
+    if (this->logLevel >= LOG_LEVEL_ERROR) {
         logPrint(message, "[ERROR]");
     }
 }
 
 void LoggerPSP::logWarning(std::string message) {
-    if (this->logLevel >= LoggerPSP::LOG_LEVEL_WARNING) {
+    if (this->logLevel >= LOG_LEVEL_WARNING) {
         logPrint(message, "[WARNING]");
     }
 }
 
 void LoggerPSP::logInfo(std::string message) {
-    if (this->logLevel >= LoggerPSP::LOG_LEVEL_INFO) {
+    if (this->logLevel >= LOG_LEVEL_INFO) {
         logPrint(message, "[INFO]");
     }
 }
 
 void LoggerPSP::logDebug(std::string message) {
-    if (this->logLevel >= LoggerPSP::LOG_LEVEL_DEBUG) {
+    if (this->logLevel >= LOG_LEVEL_DEBUG) {
         logPrint(message, "[DEBUG]");
     }
 }

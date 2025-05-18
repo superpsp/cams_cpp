@@ -5,7 +5,7 @@ class LoggerPSP;
 class LoggerPSPDestructor {
     public:
         ~LoggerPSPDestructor();
-        void initialize(LoggerPSP* p);
+        void initialize(LoggerPSP *p);
     private:
         LoggerPSP* instance;
 };
@@ -19,6 +19,7 @@ class LoggerPSP {
             , LOG_DEST_CONSOLE = 0
             , LOG_DEST_FILE = 1;
 
+        LoggerPSP& operator = (LoggerPSP&);
         static LoggerPSP& getInstance();
         void setLogLevel(short level),
             setLogDestination(short destination),
@@ -30,7 +31,6 @@ class LoggerPSP {
     protected:
         LoggerPSP() {}
         LoggerPSP(const LoggerPSP&);
-        LoggerPSP& operator=(LoggerPSP&);
         ~LoggerPSP() {}
         friend class LoggerPSPDestructor;
     private:
@@ -38,7 +38,7 @@ class LoggerPSP {
             logDestination;
         std::string logFileName;
 
-        static LoggerPSP* instance;
-        static LoggerPSPDestructor destructor;
         void logPrint(std::string message, std::string level);
+        //static LoggerPSP *instance;
+        static LoggerPSPDestructor destructor;
 };

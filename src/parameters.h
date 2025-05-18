@@ -11,9 +11,15 @@ class AppParametersDestructor {
 class AppParameters {
     public:
         static AppParameters& getInstance();
+        void setParameters();
     protected:
+        AppParameters() {}
+        AppParameters(const AppParameters&);
+        AppParameters& operator = (AppParameters&);
+        ~AppParameters() {}
         friend class AppParametersDestructor;
     private:
-        static AppParameters* instance;
+        //static AppParameters* instance;
         static AppParametersDestructor destructor;
+
 };
