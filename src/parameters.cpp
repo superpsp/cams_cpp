@@ -17,6 +17,7 @@ void AppParametersDestructor::initialize(AppParameters* p) {
 AppParameters& AppParameters::getInstance() {
 	if (!appParametersInstance) {
 		appParametersInstance = new AppParameters();
+		LOGGER.logDebug("AppParameters::getInstance: Instance created");
 	}
 	return *appParametersInstance;
 }
