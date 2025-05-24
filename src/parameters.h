@@ -1,3 +1,5 @@
+#include <string>
+
 class AppParameters;
 
 class AppParametersDestructor {
@@ -11,8 +13,7 @@ class AppParametersDestructor {
 class AppParameters {
     public:
         static AppParameters& getInstance();
-        void setParameters(int argc, char* argv[]);
-        void printHelp();
+        void parseParameters(int argc, char* argv[]);
     protected:
         AppParameters() {}
         AppParameters(const AppParameters&);
@@ -21,5 +22,6 @@ class AppParameters {
         friend class AppParametersDestructor;
     private:
         static AppParametersDestructor destructor;
-
+        void printHelp();
+        bool validateParameter(std::string argument, std::string nextArgument);
 };

@@ -13,7 +13,7 @@ private:
 class Dispatcher {
 public:
 	static Dispatcher& getInstance();
-	void setIpFile(std::string ipFile);
+	bool initialize(std::string ipFile, unsigned int numberOfDevices, unsigned int deviceLifetimeSeconds, unsigned int deviceLifeTimeCheckSeconds);
 protected:
 	Dispatcher& operator = (Dispatcher&);
 
@@ -23,4 +23,8 @@ protected:
 	friend class DispatcherDestructor;
 private:
 	std::string ipFile;
+	unsigned int numberOfDevices;
+	unsigned int deviceLifetimeSeconds;
+	unsigned int deviceLifeTimeCheckSeconds;
+	void registerDevice();
 };

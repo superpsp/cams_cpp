@@ -1,5 +1,6 @@
 #include "dispatcher.h"
 #include "loggerpsp.h"
+#include <fstream>
 
 #define LOGGER LoggerPSP::getInstance()
 
@@ -23,7 +24,23 @@ Dispatcher& Dispatcher::getInstance() {
 	return *dispatcherInstance;
 }
 
-void Dispatcher::setIpFile(std::string ipFile) {
-	LOGGER.logDebug("Dispatcher::setIpFile: ipFile = " + ipFile);
+bool Dispatcher::initialize(std::string ipFile, unsigned int numberOfDevices, unsigned int deviceLifetimeSeconds, unsigned int deviceLifeTimeCheckSeconds) {
+	LOGGER.logDebug("Dispatcher::setIpFile: ipFile = " + ipFile
+		+ ", numberOfDevices = " + std::to_string(numberOfDevices)
+		+ ", deviceLifetimeSeconds = " + std::to_string(deviceLifetimeSeconds)
+		+ ", deviceLifetimeCheckSeconds = " + std::to_string(deviceLifeTimeCheckSeconds));
 	this->ipFile = ipFile;
+	this->numberOfDevices = numberOfDevices;
+	this->deviceLifetimeSeconds = deviceLifetimeSeconds;
+	this->deviceLifeTimeCheckSeconds = deviceLifeTimeCheckSeconds;
+	std::ifstream inIpFile(this->ipFile, std::ifstream::in);
+	if (!inIpFile.is_open()) {
+		LOGGER.logError("Can't open file " + this->ipFile + " for reading");
+		return false;
+	}
+	return true;
+}
+
+void Dispatcher::registerDevice() {
+	LOGGER.logDebug("Dispatcher::registerDevice: ipFile = " + ipFile);
 }

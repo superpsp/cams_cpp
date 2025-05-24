@@ -1,13 +1,16 @@
-#include <iostream>
 #include "loggerpsp.h"
 #include "tools.h"
+#include "fsmanager.h"
 
 #define TOOLS Tools::getInstance()
+#define FILE_SYSTEM_MANAGER FileSystemManager::getInstance()
 
 LoggerPSP *loggerInstance = 0;
 
 LoggerPSPDestructor::~LoggerPSPDestructor() {
-    std::cout << "[DEBUG]" << " " << "LoggerPSPDestructor: Instance deleted" << std::endl;
+    if (FILE_SYSTEM_MANAGER.isFileOpened(loggerInstance->logFileName)) {
+        FILE_SYSTEM_MANAGER.fileClose(loggerInstance->logFileName);
+    }
     delete loggerInstance;
 }
 
@@ -18,27 +21,30 @@ void LoggerPSPDestructor::initialize(LoggerPSP* p) {
 LoggerPSP &LoggerPSP::getInstance() {
     if (!loggerInstance) {
         loggerInstance = new LoggerPSP();
-        std::cout << TOOLS.getTime() << " " << "[DEBUG]" << " " << "LoggerPSP: Instance created" << std::endl;
     }
     return *loggerInstance;
 }
 
-void LoggerPSP::setLogLevel(short level) {
-    this->logLevel = level;
+void LoggerPSP::setDefaultParameters() {
+    logLevel = LOG_LEVEL_ERROR;
+    logDestination = LOG_DEST_FILE;
+    logFileName = LOG_FILE_NAME;
+}
+
+void LoggerPSP::setLogLevel(short logLevel) {
+    this->logLevel = logLevel;
+    if (this->logLevel >= LOG_LEVEL_DEBUG) {
+        logDebug("LoggerPSP::setLogLevel: logLevel = " + std::to_string(this->logLevel));
+    }
 }
 
 void LoggerPSP::setLogDestination(short destination) {
     this->logDestination = destination;
+    logDebug(" LoggerPSP::setLogDestination: logDestination = " + std::to_string(this->logDestination));
 }
 
 void LoggerPSP::setLogFileName(std::string fileName) {
     this->logFileName = fileName;
-}
-
-void LoggerPSP::logPrint(std::string message, std::string level) {
-    if (LOG_DEST_FILE == 1) {
-        std::cout << TOOLS.getTime() << " " << level << " " << message << std::endl;
-    }
 }
 
 void LoggerPSP::logError(std::string message) {
@@ -65,7 +71,20 @@ void LoggerPSP::logDebug(std::string message) {
     }
 }
 
+void LoggerPSP::logPrint(std::string message, std::string level) {
+    logText(TOOLS.getTime() + " " + level + " " + message);
+}
+
 void LoggerPSP::logText(std::string message) {
-    std::cout << message << std::endl;
+    if (logDestination == LOG_DEST_CONSOLE) {
+        std::cout << message << std::endl;
+    } else {
+        if (!FILE_SYSTEM_MANAGER.isFileOpened(logFileName)
+            || FILE_SYSTEM_MANAGER.writeToFile(logFileName, message) != FILE_SYSTEM_MANAGER.FILE_MANAGER_OK) {
+            std::cout << "Can not write to file " << logFileName << std::endl;
+            logDestination = LOG_DEST_CONSOLE;
+            std::cout << message << std::endl;
+        }
+    }
 }
 
