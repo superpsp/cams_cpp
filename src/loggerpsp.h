@@ -42,7 +42,7 @@ protected:
         short logLevel
             , logDestination;
 
-        const std::string LOG_FILE_NAME = "cams.txt";
+        const std::string LOG_FILE_NAME = "cams.log";
         std::string logFileName;
         
         void logPrint(std::string message, std::string level);

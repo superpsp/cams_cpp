@@ -8,9 +8,9 @@
 LoggerPSP *loggerInstance = 0;
 
 LoggerPSPDestructor::~LoggerPSPDestructor() {
-    if (FILE_SYSTEM_MANAGER.isFileOpened(loggerInstance->logFileName)) {
-        FILE_SYSTEM_MANAGER.fileClose(loggerInstance->logFileName);
-    }
+    //if (FILE_SYSTEM_MANAGER.isFileOpened(loggerInstance->logFileName, FILE_SYSTEM_MANAGER.FILE_MANAGER_FILE_OUT)) {
+    //    FILE_SYSTEM_MANAGER.fileClose(loggerInstance->logFileName);
+    //}
     delete loggerInstance;
 }
 
@@ -79,7 +79,7 @@ void LoggerPSP::logText(std::string message) {
     if (logDestination == LOG_DEST_CONSOLE) {
         std::cout << message << std::endl;
     } else {
-        if (!FILE_SYSTEM_MANAGER.isFileOpened(logFileName)
+        if (!FILE_SYSTEM_MANAGER.isFileOpened(logFileName, FILE_SYSTEM_MANAGER.FILE_MANAGER_FILE_OUT)
             || FILE_SYSTEM_MANAGER.writeToFile(logFileName, message) != FILE_SYSTEM_MANAGER.FILE_MANAGER_OK) {
             std::cout << "Can not write to file " << logFileName << std::endl;
             logDestination = LOG_DEST_CONSOLE;
