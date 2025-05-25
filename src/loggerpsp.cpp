@@ -79,10 +79,15 @@ void LoggerPSP::logText(std::string message) {
     if (logDestination == LOG_DEST_CONSOLE) {
         std::cout << message << std::endl;
     } else {
-        if (!FILE_SYSTEM_MANAGER.isFileOpened(logFileName, FILE_SYSTEM_MANAGER.FILE_MANAGER_FILE_OUT)
-            || FILE_SYSTEM_MANAGER.writeToFile(logFileName, message) != FILE_SYSTEM_MANAGER.FILE_MANAGER_OK) {
-            std::cout << "Can not write to file " << logFileName << std::endl;
+        short writeResult = FILE_SYSTEM_MANAGER.writeToFile(logFileName, message);
+        if (!writeResult == FILE_SYSTEM_MANAGER.FILE_MANAGER_OPERATION_RESULT_OK) {
             logDestination = LOG_DEST_CONSOLE;
+            if (writeResult == FILE_SYSTEM_MANAGER.FILE_MANAGER_OPERATION_RESULT_NOT_OPENED) {
+                std::cout << TOOLS.getTime() << " " << "[ERROR]" << "  Can not open File " << logFileName << std::endl;
+            }
+            if (writeResult == FILE_SYSTEM_MANAGER.FILE_MANAGER_OPERATION_RESULT_NOT_GOOD) {
+                std::cout << TOOLS.getTime() << " " << "[ERROR]" << "  File " << logFileName << " is not good" << std::endl;
+            }
             std::cout << message << std::endl;
         }
     }

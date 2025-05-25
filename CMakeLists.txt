@@ -18,10 +18,10 @@ project (cams LANGUAGES CXX)
 add_executable (
 	cams "src/cams.cpp"
 	"src/tools.h" "src/tools.cpp"
+	 "src/fsmanager.h" "src/fsmanager.cpp"
 	"src/loggerpsp.h" "src/loggerpsp.cpp"
 	"src/parameters.h" "src/parameters.cpp"
-	 "src/dispatcher.h" "src/dispatcher.cpp"
-	 "src/device.h" "src/device.cpp" "src/fsmanager.h" "src/fsmanager.cpp")
+	 "src/dispatcher.h" "src/dispatcher.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET cams PROPERTY CXX_STANDARD 20)
