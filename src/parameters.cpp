@@ -22,9 +22,10 @@ AppParameters& AppParameters::getInstance() {
 }
 
 void AppParameters::parseParameters(int argc, char* argv[]) {
-	LOGGER.setDefaultParameters();
-
-	std::string argument, nextArgument;
+	std::string
+		argument
+		, nextArgument
+		, executedCommand = argv[0];
 
 	if (argc && argc > 1) {
 		for (int i = 1; i < argc; i++) {
@@ -32,6 +33,10 @@ void AppParameters::parseParameters(int argc, char* argv[]) {
 			LOGGER.logDebug("AppParameters::parseParameters: argument = " + argument);
 			if (argument.find("-d") != std::string::npos) {
 				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_DEBUG);
+				for (int j = 1; j < argc; j++) {
+					executedCommand = executedCommand + " " + argv[j];
+				}
+				LOGGER.logDebug("AppParameters::parseParameters: executedCommand = " + executedCommand);
 			} else if (argument.find("--info") != std::string::npos) {
 				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_INFO);
 			} else if (argument.find("--warning") != std::string::npos) {

@@ -8,9 +8,6 @@
 LoggerPSP *loggerInstance = 0;
 
 LoggerPSPDestructor::~LoggerPSPDestructor() {
-    //if (FILE_SYSTEM_MANAGER.isFileOpened(loggerInstance->logFileName, FILE_SYSTEM_MANAGER.FILE_MANAGER_FILE_OUT)) {
-    //    FILE_SYSTEM_MANAGER.fileClose(loggerInstance->logFileName);
-    //}
     delete loggerInstance;
 }
 
@@ -21,6 +18,7 @@ void LoggerPSPDestructor::initialize(LoggerPSP* p) {
 LoggerPSP &LoggerPSP::getInstance() {
     if (!loggerInstance) {
         loggerInstance = new LoggerPSP();
+        loggerInstance->setDefaultParameters();
     }
     return *loggerInstance;
 }

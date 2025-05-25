@@ -16,8 +16,7 @@ class LoggerPSP {
         LoggerPSP& operator = (LoggerPSP&);
         static LoggerPSP& getInstance();
         void
-            setDefaultParameters()
-            , setLogLevel(short logLevel)
+            setLogLevel(short logLevel)
             , setLogDestination(short destination)
             , setLogFileName(std::string fileName)
             , logError(std::string message)
@@ -47,4 +46,5 @@ protected:
         
         void logPrint(std::string message, std::string level);
         static LoggerPSPDestructor destructor;
+        void setDefaultParameters();
 };

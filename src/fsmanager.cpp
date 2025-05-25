@@ -8,6 +8,11 @@ FileSystemManagerDestructor::~FileSystemManagerDestructor() {
 
 void FileSystemManagerDestructor::initialize(FileSystemManager* p) {
 	fileSystemManagerInstance = p;
+	if (!fileSystemManagerInstance->files.empty()) {
+		for (std::map<std::string, std::fstream>::iterator it = fileSystemManagerInstance->files.begin(); it != fileSystemManagerInstance->files.end(); it++) {
+			fileSystemManagerInstance->closeFile(it->second);
+		}
+	}
 }
 
 FileSystemManager& FileSystemManager::getInstance() {
@@ -49,4 +54,10 @@ short FileSystemManager::writeToFile(std::string fileName, std::string line) {
 		
 	it->second << line << std::endl;
 	return FILE_MANAGER_OPERATION_RESULT_OK;
+}
+
+void FileSystemManager::closeFile(std::fstream& file) {
+	if (file.is_open()) {
+		file.close();
+	}
 }

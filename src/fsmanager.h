@@ -34,4 +34,5 @@ private:
     std::map<std::string, std::fstream> files;
     void createFile(std::string fileName);
     bool openFile(std::fstream& file, std::string fileName, short ioType);
+    void closeFile(std::fstream& file);
 };
