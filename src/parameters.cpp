@@ -26,12 +26,17 @@ void AppParameters::parseParameters(int argc, char* argv[]) {
 		argument
 		, nextArgument
 		, executedCommand = argv[0];
+	short logDestination = LOGGER.LOG_DEST_FILE;
 
 	if (argc && argc > 1) {
 		for (int i = 1; i < argc; i++) {
 			argument = argv[i];
 			LOGGER.logDebug("AppParameters::parseParameters: argument = " + argument);
-			if (argument.find("-d") != std::string::npos) {
+			if (argument.find("-h") || argument.find("--help") != std::string::npos) {
+				LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
+				printHelp();
+				break;
+			} else if (argument.find("-d") != std::string::npos) {
 				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_DEBUG);
 				for (int j = 1; j < argc; j++) {
 					executedCommand = executedCommand + " " + argv[j];
@@ -82,9 +87,9 @@ void AppParameters::printHelp() {
 	LOGGER.logText("Usage: cams <options>");
 	LOGGER.logText("<options>:");
 	LOGGER.logText("\t -h --help\tShow help");
-	LOGGER.logText("\t -d\t\tDebug logging level");
-	LOGGER.logText("\t --info\t\tInfo logging level");
-	LOGGER.logText("\t --warning\tWarning logging level");
+	LOGGER.logText("\t -d\t\tDebug logging level (the deepest level will be used from the provided ones)");
+	LOGGER.logText("\t --info\t\tInfo logging level (the deepest level will be used from the provided ones)");
+	LOGGER.logText("\t --warning\tWarning logging level (the deepest level will be used from the provided ones)");
 	LOGGER.logText("\t --log_destination destination\t\tdestination = 0 - console, destination = 1 - file (default 1)");
 	LOGGER.logText("\t --log_file_name log_file_name\t\tdefault log_file_name = cams.log, log_file_name can not have - as a first character");
 	LOGGER.logText("\t --ip_file_name ip_file_name\t\tdefault ip_file_name = ips.txt");

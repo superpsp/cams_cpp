@@ -17,9 +17,14 @@ public:
     const short
         FILE_MANAGER_OPERATION_RESULT_OK = 0
         , FILE_MANAGER_OPERATION_RESULT_NOT_OPENED = 0
-        , FILE_MANAGER_OPERATION_RESULT_NOT_GOOD = 0;
+        , FILE_MANAGER_OPERATION_RESULT_NOT_GOOD = 1
+        , FILE_MANAGER_OPERATION_RESULT_FILE_IS_OPENED = 2;
     static FileSystemManager& getInstance();
     short writeToFile(std::string fileName, std::string line);
+    std::string readFromFile(std::string fileName);
+    short printFile(std::string fileName);
+    short changeFileModeForomOutToIn(std::string fileName);
+    void closeFile(std::string fileName);
 protected:
     FileSystemManager() {}
     FileSystemManager(const FileSystemManager&);
@@ -34,5 +39,6 @@ private:
     std::map<std::string, std::fstream> files;
     void createFile(std::string fileName);
     bool openFile(std::fstream& file, std::string fileName, short ioType);
+    std::string readFromFile(std::fstream& file);
     void closeFile(std::fstream& file);
 };

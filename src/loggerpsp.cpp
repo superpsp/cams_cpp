@@ -37,8 +37,20 @@ void LoggerPSP::setLogLevel(short logLevel) {
 }
 
 void LoggerPSP::setLogDestination(short destination) {
-    this->logDestination = destination;
-    logDebug(" LoggerPSP::setLogDestination: logDestination = " + std::to_string(this->logDestination));
+    logDebug("LoggerPSP::setLogDestination: destination =  " + destination);
+    if (logDestination != destination) {
+        if (logDestination = LOG_DEST_FILE) {
+            FILE_SYSTEM_MANAGER.closeFile(LOG_FILE_NAME);
+            logDebug("LoggerPSP::setLogDestination: File " + LOG_FILE_NAME + " was closed");
+            if (FILE_SYSTEM_MANAGER.printFile(LOG_FILE_NAME) != FILE_SYSTEM_MANAGER.FILE_MANAGER_OPERATION_RESULT_OK) {
+                if (FILE_SYSTEM_MANAGER.FILE_MANAGER_OPERATION_RESULT_FILE_IS_OPENED) {
+                    logDebug("LoggerPSP::setLogDestination: Can not read from " + LOG_FILE_NAME + " , because it is opened");
+                }
+            }
+        }
+        this->logDestination = destination;
+        logDebug(" LoggerPSP::setLogDestination: logDestination = " + std::to_string(this->logDestination));
+    }
 }
 
 void LoggerPSP::setLogFileName(std::string fileName) {
