@@ -23,7 +23,7 @@ public:
     short writeToFile(std::string fileName, std::string line);
     std::string readFromFile(std::string fileName);
     short printFile(std::string fileName);
-    short changeFileModeForomOutToIn(std::string fileName);
+    //short changeFileModeForomOutToIn(std::string fileName);
     void closeFile(std::string fileName);
 protected:
     FileSystemManager() {}

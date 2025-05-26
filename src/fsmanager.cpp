@@ -81,9 +81,9 @@ std::string FileSystemManager::readFromFile(std::fstream& file) {
 	return line;
 }
 
-short changeFileModeForomOutToIn(std::string fileName) {
-	// TODO mutex
-}
+//short changeFileModeForomOutToIn(std::string fileName) {
+//	// TODO mutex
+//}
 
 short FileSystemManager::printFile(std::string fileName) {
 	std::map<std::string, std::fstream>::iterator it = files.find(fileName);
