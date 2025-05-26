@@ -8,6 +8,7 @@ File::File(std::string filePath, short filetype, short fileIOMode) {
 	this->type = filetype;
 	this->file = std::fstream(filePath);
 	this->mode = fileIOMode;
+	// TODO Register in FileSystemManager to avoid duplicates
 	if (this->mode == FILE_IO_OUT) {
 		this->file.open(this->path, std::ios::out);
 	} else {
