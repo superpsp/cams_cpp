@@ -25,6 +25,7 @@ public:
     short printFile(std::string fileName);
     //short changeFileModeForomOutToIn(std::string fileName);
     void closeFile(std::string fileName);
+    bool registerFile(std::string filePath, std::fstream& file);
 protected:
     FileSystemManager() {}
     FileSystemManager(const FileSystemManager&);

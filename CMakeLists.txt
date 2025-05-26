@@ -21,7 +21,7 @@ add_executable (
 	 "src/fsmanager.h" "src/fsmanager.cpp"
 	"src/loggerpsp.h" "src/loggerpsp.cpp"
 	"src/parameters.h" "src/parameters.cpp"
-	 "src/dispatcher.h" "src/dispatcher.cpp")
+	 "src/dispatcher.h" "src/dispatcher.cpp" "src/file.h" "src/file.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET cams PROPERTY CXX_STANDARD 20)
