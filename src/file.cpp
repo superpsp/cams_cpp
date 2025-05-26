@@ -4,18 +4,23 @@
 #define FILE_SYSTEM_MANAGER FileSystemManager::getInstance()
 
 File::File(std::string filePath, short filetype, short fileIOMode) {
-	this->filePath = filePath;
+	this->path = filePath;
+	this->type = filetype;
 	this->file = std::fstream(filePath);
 	this->mode = fileIOMode;
 	if (this->mode == FILE_IO_OUT) {
-		this->file.open(this->filePath, std::ios::out);
+		this->file.open(this->path, std::ios::out);
 	} else {
-		this->file.open(this->filePath, std::ios::in);
+		this->file.open(this->path, std::ios::in);
 	}
 }
 
 void File::writeLine(std::string line) {
-	this->file << line << std::endl;
+	if (this->mode == FILE_IO_OUT && this->type == FILE_TXT) {
+		this->file << line << std::endl;
+	} else {
+		throw "[ERROR] File::writeLine: Either " + this->path + " is opened for input or it is not a .txt file";
+	}
 }
 
 File::~File() {

@@ -15,7 +15,9 @@ public:
 	~File();
 
 private:
-	std::string filePath; // TODO Slash for Windows an UNIX
+	std::string path; // TODO Slash for Windows an UNIX
 	std::fstream file;
-	short mode;
+	short
+		mode
+		, type;
 };
