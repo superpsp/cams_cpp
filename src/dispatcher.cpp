@@ -1,8 +1,8 @@
 #include "dispatcher.h"
-#include "loggerpsp.h"
+#include "logger.h"
 #include <fstream>
 
-#define LOGGER LoggerPSP::getInstance()
+#define LOGGER Logger::getInstance()
 
 Dispatcher* dispatcherInstance = 0;
 

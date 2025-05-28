@@ -1,5 +1,5 @@
 #include <iostream>
-#include "loggerpsp.h"
+#include "logger.h"
 #include "tools.h"
 #include "file.h"
 
@@ -8,11 +8,11 @@
 Logger *loggerInstance = 0;
 File *logFile = 0;
 
-LoggerPSPDestructor::~LoggerPSPDestructor() {
+LoggerDestructor::~LoggerDestructor() {
     delete loggerInstance;
 }
 
-void LoggerPSPDestructor::initialize(Logger* p) {
+void LoggerDestructor::initialize(Logger* p) {
     loggerInstance = p;
 }
 
@@ -100,18 +100,13 @@ void Logger::logText(std::string message) {
             if (writeResult == logFile->FILE_NOT_GOOD) {
                 errorMessage = " is not good";
             }
-            if (writeResult == logFile->FILE_NOT_GOOD) {
-                errorMessage = " is not good";
+            if (writeResult == logFile->FILE_NOT_OUT) {
+                errorMessage = " is not opened for out";
             }
-        }
-        if (!writeResult == FILE_SYSTEM_MANAGER.FILE_MANAGER_OPERATION_RESULT_OK) {
-            logDestination = LOG_DEST_CONSOLE;
-            if (writeResult == FILE_SYSTEM_MANAGER.FILE_MANAGER_OPERATION_RESULT_NOT_OPENED) {
-                std::cout << TOOLS.getTime() << " " << "[ERROR]" << "  Can not open File " << logFileName << std::endl;
+            if (writeResult == logFile->FILE_NOT_TXT) {
+                errorMessage = " is not a TXT file";
             }
-            if (writeResult == FILE_SYSTEM_MANAGER.FILE_MANAGER_OPERATION_RESULT_NOT_GOOD) {
-                std::cout << TOOLS.getTime() << " " << "[ERROR]" << "  File " << logFileName << " is not good" << std::endl;
-            }
+            std::cout << TOOLS.getTime() << " " << "[ERROR] " << logFileName << errorMessage << std::endl;
             std::cout << message << std::endl;
         }
     }

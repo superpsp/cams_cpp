@@ -1,4 +1,4 @@
-#include "loggerpsp.h"
+#include "logger.h"
 #include "parameters.h"
 #include "tools.h"
 #include "dispatcher.h"
@@ -23,6 +23,6 @@ int main(int argc, char* argv[]) {
 
 	ToolsDestructor();
 	//DispatcherDestructor();
-	LoggerPSPDestructor();
+	LoggerDestructor();
 	FileSystemManagerDestructor();
 }

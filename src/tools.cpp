@@ -1,8 +1,8 @@
 #include <time.h>
 #include "tools.h"
-#include "loggerpsp.h"
+#include "logger.h"
 
-#define LOGGER LoggerPSP::getInstance()
+#define LOGGER Logger::getInstance()
 
 Tools* toolsInstance = 0;
 

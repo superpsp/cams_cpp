@@ -1,5 +1,5 @@
 #include "parameters.h"
-#include "loggerpsp.h"
+#include "logger.h"
 
 #define LOGGER Logger::getInstance()
 

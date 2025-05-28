@@ -2,9 +2,9 @@
 
 class Logger;
 
-class LoggerPSPDestructor {
+class LoggerDestructor {
     public:
-        ~LoggerPSPDestructor();
+        ~LoggerDestructor();
         void initialize(Logger *p);
     private:
         Logger* loggerInstance;
@@ -35,7 +35,7 @@ protected:
         Logger() {}
         Logger(const Logger&);
         ~Logger() {}
-        friend class LoggerPSPDestructor;
+        friend class LoggerDestructor;
     private:
         short logLevel
             , logDestination;
@@ -44,6 +44,6 @@ protected:
         std::string logFileName;
         
         void logPrint(std::string message, std::string level);
-        static LoggerPSPDestructor destructor;
+        static LoggerDestructor destructor;
         void setDefaultParameters();
 };
