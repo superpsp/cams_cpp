@@ -19,7 +19,7 @@ add_executable (
 	cams "src/cams.cpp"
 	"src/tools.h" "src/tools.cpp"
 	 "src/fsmanager.h" "src/fsmanager.cpp"
-	"src/loggerpsp.h" "src/loggerpsp.cpp"
+	"src/logger.h" "src/logger.cpp"
 	"src/parameters.h" "src/parameters.cpp"
 	 "src/dispatcher.h" "src/dispatcher.cpp" "src/file.h" "src/file.cpp")
 
