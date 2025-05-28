@@ -16,16 +16,36 @@ File::File(std::string filePath, short filetype, short fileIOMode) {
 	}
 }
 
-void File::writeLine(std::string line) {
-	if (this->mode == FILE_IO_OUT && this->type == FILE_TXT) {
-		this->file << line << std::endl;
-	} else {
-		throw "[ERROR] File::writeLine: Either " + this->path + " is opened for input or it is not a .txt file";
+short File::writeLine(std::string line) {
+	short checkResult = checkFile(FILE_CHECK_FOR_WRITE);
+	if (checkResult != FILE_OK) {
+		return checkResult;
 	}
+	this->file << line << std::endl;
+	return FILE_OK;
+}
+
+short File::checkFile(short checkType) {
+	if (!file.is_open()) {
+		return FILE_NOT_OPENED;
+	}
+	if (!file.good()) {
+		return FILE_NOT_GOOD;
+	}
+	if (checkType == FILE_CHECK_FOR_WRITE) {
+		if (mode != FILE_IO_OUT) {
+			return FILE_NOT_OUT;
+		}
+		if (type != FILE_TXT) {
+			return FILE_NOT_TXT;
+		}
+	}
+	return FILE_OK;
 }
 
 File::~File() {
 	if (file.is_open()) {
+		std::cout << "File " << path << " closed" << std::endl;
 		file.close();
 	}
 }

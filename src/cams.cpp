@@ -4,7 +4,7 @@
 #include "dispatcher.h"
 #include "fsmanager.h"
 
-#define LOGGER LoggerPSP::getInstance()
+#define LOGGER Logger::getInstance()
 #define APPPARAMETERS AppParameters::getInstance()
 
 int main(int argc, char* argv[]) {

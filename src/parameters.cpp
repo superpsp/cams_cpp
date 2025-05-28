@@ -1,7 +1,7 @@
 #include "parameters.h"
 #include "loggerpsp.h"
 
-#define LOGGER LoggerPSP::getInstance()
+#define LOGGER Logger::getInstance()
 
 AppParameters* appParametersInstance = 0;
 

@@ -1,20 +1,19 @@
 #include <string>
-#include <iostream>
 
-class LoggerPSP;
+class Logger;
 
 class LoggerPSPDestructor {
     public:
         ~LoggerPSPDestructor();
-        void initialize(LoggerPSP *p);
+        void initialize(Logger *p);
     private:
-        LoggerPSP* loggerInstance;
+        Logger* loggerInstance;
 };
 
-class LoggerPSP {
+class Logger {
     public:
-        LoggerPSP& operator = (LoggerPSP&);
-        static LoggerPSP& getInstance();
+        Logger& operator = (Logger&);
+        static Logger& getInstance();
         void
             setLogLevel(short logLevel)
             , setLogDestination(short destination)
@@ -33,9 +32,9 @@ class LoggerPSP {
             , LOG_DEST_CONSOLE = 0
             , LOG_DEST_FILE = 1;
 protected:
-        LoggerPSP() {}
-        LoggerPSP(const LoggerPSP&);
-        ~LoggerPSP() {}
+        Logger() {}
+        Logger(const Logger&);
+        ~Logger() {}
         friend class LoggerPSPDestructor;
     private:
         short logLevel
