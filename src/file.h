@@ -17,6 +17,7 @@ public:
 
 	File(std::string filePath, short filetype, short fileIOMode);
 	short writeLine(std::string line); // Writes a line to FILE_TXT
+	void fileClose();
 	~File();
 
 private:

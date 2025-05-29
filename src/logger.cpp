@@ -9,6 +9,7 @@ Logger *loggerInstance = 0;
 File *logFile = 0;
 
 LoggerDestructor::~LoggerDestructor() {
+    delete logFile;
     delete loggerInstance;
 }
 
@@ -40,19 +41,10 @@ void Logger::setLogLevel(short logLevel) {
 
 void Logger::setLogDestination(short destination) {
     logDebug("Logger::setLogDestination: destination =  " + destination);
-    //if (logDestination != destination) {
-    //    if (logDestination = LOG_DEST_FILE) {
-    //        FILE_SYSTEM_MANAGER.closeFile(LOG_FILE_NAME);
-    //        logDebug("Logger::setLogDestination: File " + LOG_FILE_NAME + " was closed");
-    //        if (FILE_SYSTEM_MANAGER.printFile(LOG_FILE_NAME) != FILE_SYSTEM_MANAGER.FILE_MANAGER_OPERATION_RESULT_OK) {
-    //            if (FILE_SYSTEM_MANAGER.FILE_MANAGER_OPERATION_RESULT_FILE_IS_OPENED) {
-    //                logDebug("Logger::setLogDestination: Can not read from " + LOG_FILE_NAME + " , because it is opened");
-    //            }
-    //        }
-    //    }
-    //    this->logDestination = destination;
-    //    logDebug(" Logger::setLogDestination: logDestination = " + std::to_string(this->logDestination));
-    //}
+    if (destination == LOG_DEST_CONSOLE && logDestination == LOG_DEST_FILE) {
+        
+    }
+    this->logDestination = destination;
 }
 
 void Logger::setLogFileName(std::string fileName) {

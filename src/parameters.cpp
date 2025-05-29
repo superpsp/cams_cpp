@@ -1,5 +1,6 @@
 #include "parameters.h"
 #include "logger.h"
+#include <iostream>
 
 #define LOGGER Logger::getInstance()
 
@@ -31,11 +32,8 @@ void AppParameters::parseParameters(int argc, char* argv[]) {
 	if (argc && argc > 1) {
 		for (int i = 1; i < argc; i++) {
 			argument = argv[i];
-			if (argument.find("-h") || argument.find("--help") != std::string::npos) {
-				LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
-				printHelp();
-				break;
-			} else if (argument.find("-d") != std::string::npos) {
+			std::cout << argument << std::endl;
+			if (argument.find("-d") != std::string::npos) {
 				LOGGER.logDebug("AppParameters::parseParameters: argument = " + argument);
 				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_DEBUG);
 				for (int j = 1; j < argc; j++) {
@@ -51,6 +49,7 @@ void AppParameters::parseParameters(int argc, char* argv[]) {
 			} else if (argument.find("--log_file_name") != std::string::npos && validateParameter(argument, argv[i + 1])) {
 				i++;
 			} else {
+				LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
 				printHelp();
 				break;
 			}

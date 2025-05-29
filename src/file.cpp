@@ -42,9 +42,13 @@ short File::checkFile(short checkType) {
 	return FILE_OK;
 }
 
+void File::fileClose() {
+	file.close();
+}
+
 File::~File() {
 	if (file.is_open()) {
 		std::cout << "File " << path << " closed" << std::endl;
-		file.close();
+		fileClose();
 	}
 }
