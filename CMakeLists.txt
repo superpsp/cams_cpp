@@ -11,8 +11,8 @@ endif()
 
 project (cams LANGUAGES CXX)
 
-# set(CMAKE_CXX_STANDARD 11)
-# set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add source to this project's executable.
 add_executable (
@@ -21,7 +21,8 @@ add_executable (
 	 "src/fsmanager.h" "src/fsmanager.cpp"
 	"src/logger.h" "src/logger.cpp"
 	"src/parameters.h" "src/parameters.cpp"
-	 "src/dispatcher.h" "src/dispatcher.cpp" "src/file.h" "src/file.cpp")
+	 "src/dispatcher.h" "src/dispatcher.cpp"
+	 "src/file.h" "src/file.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET cams PROPERTY CXX_STANDARD 20)

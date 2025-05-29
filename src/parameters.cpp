@@ -31,12 +31,12 @@ void AppParameters::parseParameters(int argc, char* argv[]) {
 	if (argc && argc > 1) {
 		for (int i = 1; i < argc; i++) {
 			argument = argv[i];
-			LOGGER.logDebug("AppParameters::parseParameters: argument = " + argument);
 			if (argument.find("-h") || argument.find("--help") != std::string::npos) {
 				LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
 				printHelp();
 				break;
 			} else if (argument.find("-d") != std::string::npos) {
+				LOGGER.logDebug("AppParameters::parseParameters: argument = " + argument);
 				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_DEBUG);
 				for (int j = 1; j < argc; j++) {
 					executedCommand = executedCommand + " " + argv[j];
