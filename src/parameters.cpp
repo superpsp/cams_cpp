@@ -29,6 +29,8 @@ void AppParameters::parseParameters(int argc, char* argv[]) {
 		, executedCommand = argv[0];
 	short logDestination = LOGGER.LOG_DEST_FILE;
 
+	// TODO if noone argument is acceptable, then help, some bool var is necessary
+
 	if (argc && argc > 1) {
 		for (int i = 1; i < argc; i++) {
 			argument = argv[i];
