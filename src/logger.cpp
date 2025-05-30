@@ -9,6 +9,7 @@ Logger *loggerInstance = 0;
 File *logFile = 0;
 
 LoggerDestructor::~LoggerDestructor() {
+    logFile->fileClose();
     delete logFile;
     delete loggerInstance;
 }
