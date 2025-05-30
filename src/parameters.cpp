@@ -28,43 +28,44 @@ void AppParameters::parseParameters(int argc, char* argv[]) {
 		argument
 		, nextArgument
 		, executedCommand = argv[0];
-	bool areParametersCorrect = true;
+	bool areParametersCorrect = false;
 
 	if (argc && argc > 1) {
 		for (int i = 1; i < argc; i++) {
 			argument = argv[i];
-			if (argument.find("-h") != std::string::npos || argument.find("--help") != std::string::npos) {
-				LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
-				printHelp();
-			} else if (argument.find("-d") != std::string::npos) {
+			if (argument.find("-d") != std::string::npos) {
 				LOGGER.logDebug("AppParameters::parseParameters: argument = " + argument);
 				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_DEBUG);
 				for (int j = 1; j < argc; j++) {
 					executedCommand = executedCommand + " " + argv[j];
 				}
 				LOGGER.logDebug("AppParameters::parseParameters: executedCommand = " + executedCommand);
+				areParametersCorrect = true;
 			} else if (argument.find("--info") != std::string::npos) {
 				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_INFO);
+				areParametersCorrect = true;
 			} else if (argument.find("--warning") != std::string::npos) {
 				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_WARNING);
+				areParametersCorrect = true;
 			} else if (argument.find("--log_destination") != std::string::npos) {
-				if (!validateParameter(argument, argv[i + 1])) {
-					areParametersCorrect = false;
+				areParametersCorrect = validateParameter(argument, argv[i + 1]);
+				if (!areParametersCorrect) {
 					break;
 				}
+				// TODO LOGGER.setLogDestination with old file
 				i++;
 			} else if (argument.find("--log_file_name") != std::string::npos) {
-				if (!validateParameter(argument, argv[i + 1])) {
-					areParametersCorrect = false;
+				areParametersCorrect = validateParameter(argument, argv[i + 1]);
+				if (!areParametersCorrect) {
 					break;
 				}
 				i++;
 			}
 		}
-		//if (!areParametersCorrect) {
-		//	LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
-		//	printHelp();
-		//}
+		if (!areParametersCorrect) {
+			LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
+			printHelp();
+		}
 	}
 	LOGGER.logDebug("AppParameters::parseParameters: End");
 }
