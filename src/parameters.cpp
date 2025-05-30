@@ -18,6 +18,7 @@ void AppParametersDestructor::initialize(AppParameters* p) {
 AppParameters& AppParameters::getInstance() {
 	if (!appParametersInstance) {
 		appParametersInstance = new AppParameters();
+		LOGGER;
 	}
 	return *appParametersInstance;
 }
@@ -27,15 +28,15 @@ void AppParameters::parseParameters(int argc, char* argv[]) {
 		argument
 		, nextArgument
 		, executedCommand = argv[0];
-	short logDestination = LOGGER.LOG_DEST_FILE;
-
-	// TODO if noone argument is acceptable, then help, some bool var is necessary
+	bool areParametersCorrect = true;
 
 	if (argc && argc > 1) {
 		for (int i = 1; i < argc; i++) {
 			argument = argv[i];
-			std::cout << argument << std::endl;
-			if (argument.find("-d") != std::string::npos) {
+			if (argument.find("-h") != std::string::npos || argument.find("--help") != std::string::npos) {
+				LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
+				printHelp();
+			} else if (argument.find("-d") != std::string::npos) {
 				LOGGER.logDebug("AppParameters::parseParameters: argument = " + argument);
 				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_DEBUG);
 				for (int j = 1; j < argc; j++) {
@@ -46,18 +47,26 @@ void AppParameters::parseParameters(int argc, char* argv[]) {
 				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_INFO);
 			} else if (argument.find("--warning") != std::string::npos) {
 				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_WARNING);
-			} else if (argument.find("--log_destination") != std::string::npos && validateParameter(argument, argv[i + 1])) {
+			} else if (argument.find("--log_destination") != std::string::npos) {
+				if (!validateParameter(argument, argv[i + 1])) {
+					areParametersCorrect = false;
+					break;
+				}
 				i++;
-			} else if (argument.find("--log_file_name") != std::string::npos && validateParameter(argument, argv[i + 1])) {
+			} else if (argument.find("--log_file_name") != std::string::npos) {
+				if (!validateParameter(argument, argv[i + 1])) {
+					areParametersCorrect = false;
+					break;
+				}
 				i++;
-			} else {
-				LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
-				printHelp();
-				break;
 			}
 		}
+		//if (!areParametersCorrect) {
+		//	LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
+		//	printHelp();
+		//}
 	}
-	LOGGER.logDebug("AppParameters::setParameters: End");
+	LOGGER.logDebug("AppParameters::parseParameters: End");
 }
 
 bool AppParameters::validateParameter(std::string argument, std::string nextArgument) {
@@ -79,7 +88,8 @@ bool AppParameters::validateParameter(std::string argument, std::string nextArgu
 		}
 	}
 	if (!isArgumentValid) {
-		LOGGER.logDebug("AppParameters::validateParameter: parameter " + argument + " or it's argument " + nextArgument + " is invalid");
+		LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
+		LOGGER.logText("AppParameters::validateParameter: parameter " + argument + " or it's argument " + nextArgument + " is invalid");
 	}
 	return isArgumentValid;
 }

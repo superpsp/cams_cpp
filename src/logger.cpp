@@ -40,15 +40,24 @@ void Logger::setLogLevel(short logLevel) {
 }
 
 void Logger::setLogDestination(short destination) {
-    logDebug("Logger::setLogDestination: destination =  " + destination);
-    if (destination == LOG_DEST_CONSOLE && logDestination == LOG_DEST_FILE) {
-        
+    if (destination == LOG_DEST_CONSOLE) {
+        logFile->fileClose();
+    }
+    if (destination == LOG_DEST_FILE && logDestination != LOG_DEST_FILE) {
+        logFile->fileClose();
+        delete logFile;
+        logFile = new File(logFileName, File::FILE_TXT, File::FILE_IO_OUT);
     }
     this->logDestination = destination;
 }
 
 void Logger::setLogFileName(std::string fileName) {
-    this->logFileName = fileName;
+    if (fileName != this->logFileName) {
+        logFile->fileClose();
+        delete logFile;
+        this->logFileName = fileName;
+        logFile = new File(logFileName, File::FILE_TXT, File::FILE_IO_OUT);
+    }
 }
 
 void Logger::logError(std::string message) {
