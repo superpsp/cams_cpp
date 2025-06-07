@@ -23,6 +23,7 @@ class Logger {
             , logInfo(std::string message)
             , logDebug(std::string message)
             , logText(std::string message);
+        short getLogLevel();
 
         const short
             LOG_LEVEL_ERROR = 0
@@ -36,14 +37,14 @@ protected:
         Logger(const Logger&);
         ~Logger() {}
         friend class LoggerDestructor;
-    private:
-        short logLevel
-            , logDestination;
+private:
+    short logLevel
+        , logDestination;
 
-        const std::string LOG_FILE_NAME = "cams.log";
-        std::string logFileName;
+    const std::string LOG_FILE_NAME = "cams.log";
+    std::string logFileName;
         
-        void logPrint(std::string message, std::string level);
-        static LoggerDestructor destructor;
-        void setDefaultParameters();
+    void logPrint(std::string message, std::string level);
+    static LoggerDestructor destructor;
+    void setDefaultParameters();
 };

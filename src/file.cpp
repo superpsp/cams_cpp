@@ -1,7 +1,4 @@
 #include "file.h"
-#include "fsmanager.h"
-
-#define FILE_SYSTEM_MANAGER FileSystemManager::getInstance()
 
 File::File(std::string filePath, short filetype, short fileIOMode) {
 	this->path = filePath;
@@ -16,7 +13,7 @@ File::File(std::string filePath, short filetype, short fileIOMode) {
 }
 
 short File::writeLine(std::string line) {
-	short checkResult = checkFile(FILE_CHECK_FOR_WRITE);
+	short checkResult = checkFile(FILE_TXT, FILE_IO_OUT);
 	if (checkResult != FILE_OK) {
 		return checkResult;
 	}
@@ -24,20 +21,28 @@ short File::writeLine(std::string line) {
 	return FILE_OK;
 }
 
-short File::checkFile(short checkType) {
+std::string File::readLine() {
+	short checkResult = checkFile(FILE_TXT, FILE_IO_IN);
+	if (checkResult != FILE_OK) {
+		return std::to_string(checkResult);
+	}
+	std::string line;
+	std::getline(file, line);
+	return line;
+}
+
+short File::checkFile(short checkType, short checkMode) {
 	if (!file.is_open()) {
 		return FILE_NOT_OPENED;
 	}
 	if (!file.good()) {
 		return FILE_NOT_GOOD;
 	}
-	if (checkType == FILE_CHECK_FOR_WRITE) {
-		if (mode != FILE_IO_OUT) {
-			return FILE_NOT_OUT;
-		}
-		if (type != FILE_TXT) {
-			return FILE_NOT_TXT;
-		}
+	if (type != checkType) {
+		return FILE_TYPE_NOT_CORRECT;
+	}
+	if (mode != checkMode) {
+		return FILE_MODE_NOT_CORRECT;
 	}
 	return FILE_OK;
 }

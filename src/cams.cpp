@@ -14,7 +14,10 @@ int main(int argc, char* argv[]) {
 	const unsigned int DEVICE_LIFE_TIME_SECONDS = 10;
 	const unsigned int DEVICE_LIFE_TIME_CHECK_SECONDS = 1;
 
-	APPPARAMETERS.parseParameters(argc, argv);
+	if (APPPARAMETERS.parseParameters(argc, argv)) {
+		int a;
+		a = 1;
+	}
 	AppParametersDestructor();
 
 	//if (DISPATCHER.initialize(IP_FILE_NAME, NUMBER_OF_DEVICES, DEVICE_LIFE_TIME_SECONDS, DEVICE_LIFE_TIME_CHECK_SECONDS)) {

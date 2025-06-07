@@ -43,22 +43,22 @@ void Logger::setLogLevel(short logLevel) {
 void Logger::setLogDestination(short destination) {
     if (destination == LOG_DEST_CONSOLE) {
         logFile->fileClose();
-    }
-    if (destination == LOG_DEST_FILE && logDestination != LOG_DEST_FILE) {
-        logFile->fileClose();
         delete logFile;
-        logFile = new File(logFileName, File::FILE_TXT, File::FILE_IO_OUT);
     }
     this->logDestination = destination;
+}
+
+short Logger::getLogLevel() {
+    return logLevel;
 }
 
 void Logger::setLogFileName(std::string fileName) {
     if (fileName != this->logFileName) {
         logFile->fileClose();
-        delete logFile;
-        this->logFileName = fileName;
+        File* tmpLogFile = new File(logFileName, File::FILE_TXT, File::FILE_IO_IN);
         logFile = new File(logFileName, File::FILE_TXT, File::FILE_IO_OUT);
     }
+    this->logFileName = fileName;
 }
 
 void Logger::logError(std::string message) {
@@ -102,10 +102,10 @@ void Logger::logText(std::string message) {
             if (writeResult == logFile->FILE_NOT_GOOD) {
                 errorMessage = " is not good";
             }
-            if (writeResult == logFile->FILE_NOT_OUT) {
+            if (writeResult == logFile->FILE_MODE_NOT_CORRECT) {
                 errorMessage = " is not opened for out";
             }
-            if (writeResult == logFile->FILE_NOT_TXT) {
+            if (writeResult == logFile->FILE_TYPE_NOT_CORRECT) {
                 errorMessage = " is not a TXT file";
             }
             std::cout << TOOLS.getTime() << " " << "[ERROR] " << logFileName << errorMessage << std::endl;

@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 #include <fstream>
 
 class File {
@@ -12,11 +13,12 @@ public:
 		, FILE_OK = 0
 		, FILE_NOT_OPENED = 1
 		, FILE_NOT_GOOD = 2
-		, FILE_NOT_OUT = 3
-		, FILE_NOT_TXT = 4;
+		, FILE_MODE_NOT_CORRECT = 3
+		, FILE_TYPE_NOT_CORRECT = 4;
 
 	File(std::string filePath, short filetype, short fileIOMode);
-	short writeLine(std::string line); // Writes a line to FILE_TXT
+	short writeLine(std::string line);
+	std::string readLine();
 	void fileClose();
 	~File();
 
@@ -28,5 +30,5 @@ private:
 	short
 		mode
 		, type;
-	short checkFile(short checkType);
+	short checkFile(short checkType, short checkMode);
 };
