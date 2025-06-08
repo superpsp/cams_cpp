@@ -22,8 +22,10 @@ class AppParameters {
         friend class AppParametersDestructor;
     private:
         static const char
-            PARAMETERS_NUMBER = 7;
-        std::string parameters[PARAMETERS_NUMBER];
+            PARAMETERS_NUMBER = 8;
+        std::string
+            parameters[PARAMETERS_NUMBER - 1]
+            , parameterDescriptions[PARAMETERS_NUMBER - 1];
 
         static AppParametersDestructor destructor;
         void printHelp();
@@ -33,4 +35,5 @@ class AppParameters {
         void initParameters();
         bool findAndValidate(std::string parameter);
         bool findAndValidate(std::string parameter, short last);
+        void addPerameter(char position, std::string parameter, std::string description);
 };

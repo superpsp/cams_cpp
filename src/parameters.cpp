@@ -36,9 +36,43 @@ bool AppParameters::parseParameters(int argc, char* argv[]) {
 			printHelp();
 			return false;
 		}
+		std::string parameter, message;
 		for (int i = 1; i < argc; i++) {
-			parameters[i - 1] = argv[i];
+			parameter = argv[i];
+			if (parameter.compare("-d")!= std::string::npos) {
+				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_DEBUG);
+				continue;
+			}
+			if (parameter.compare("-d") != std::string::npos
+					|| parameter.compare("--info") != std::string::npos
+					|| parameter.compare("--warning") != std::string::npos
+				) {
+				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_DEBUG);
+				continue;
+			}
+			if (parameter.compare("--log_file_name") != std::string::npos) {
+				message = "";
+				if (i == argc - 1) {
+					message = "AppParameters::parseParameters: parameter --log_file_name requites a valid argument";
+				}
+				i++;
+				parameter = argv[i];
+				if (!LOGGER.setLogFileName(parameter)) {
+					message = "AppParameters::parseParameters: parameter --log_file_name requites a valid argument, but " + parameter + " was provided";
+				}
+				if (!message.empty()) {
+					LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE);
+					LOGGER.logText(message);
+					printHelp();
+					return false;
+				}
+				continue;
+			}
+			printHelp();
+			return false;
 		}
+
+
 		if (parameters->find("-h") != std::string::npos || parameters->find("--help") != std::string::npos) {
 			printHelp();
 			return false;
@@ -47,7 +81,6 @@ bool AppParameters::parseParameters(int argc, char* argv[]) {
 			LOGGER.setLogLevel(LOGGER.LOG_LEVEL_DEBUG);
 		}
 		size_t position;
-		std::string parameter;
 
 		initParameters();
 		arguments[0] = std::to_string(LOGGER.LOG_DEST_CONSOLE);
@@ -91,8 +124,17 @@ bool AppParameters::parseParameters(int argc, char* argv[]) {
 	return true;
 }
 
+AppParameters::AppParameters(const AppParameters&){}
+
 void AppParameters::initParameters() {
-	parametersRequireArgument[] = {"--log_destination", "--log_file_name", "--p_file_name"};
+
+	addPerameter(0, "\t -h --help\t\t\t\tShow help");
+	LOGGER.logText("\t -d\t\t\t\t\tDebug logging level (the deepest level will be used from the provided ones)");
+	LOGGER.logText("\t --info\t\t\t\t\tInfo logging level (the deepest level will be used from the provided ones)");
+	LOGGER.logText("\t --warning\t\t\t\tWarning logging level (the deepest level will be used from the provided ones)");
+	LOGGER.logText("\t --log_destination destination\t\tdestination = 1 - console, destination = 0 - file (default 0)");
+	LOGGER.logText("\t --log_file_name log_file_name\t\tdefault log_file_name = cams.log, log_file_name can not have - as a first character");
+	LOGGER.logText("\t --ip_file_name ip_file_name\t\tdefault ip_file_name = ips.txt, ip_file_name can not have - as a first character");
 
 	for (short i = 0; i < ARGUMENTS_NUMBER; i++) {
 		if (arguments[i].compare(std::to_string(SHRT_MAX)) != 0) {
@@ -135,6 +177,11 @@ bool AppParameters::findAndValidate(std::string parameter, short last) {
 		}
 	}
 	return true;
+}
+
+void AppParameters::addPerameter(char position, std::string parameter, std::string description) {
+	parameters[position] = parameter;
+	parameterDescriptions[position] = description;
 }
 
 void AppParameters::printErrorMessage(std::string message) {

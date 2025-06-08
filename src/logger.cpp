@@ -33,14 +33,14 @@ void Logger::setDefaultParameters() {
     logFile = new File(logFileName, File::FILE_TXT, File::FILE_IO_OUT);
 }
 
-void Logger::setLogLevel(short logLevel) {
-    this->logLevel = logLevel;
-    if (this->logLevel >= LOG_LEVEL_DEBUG) {
+void Logger::setLogLevel(char logLevel) {
+    if (logLevel > this->logLevel) {
+        this->logLevel = logLevel;
         logDebug("Logger::setLogLevel: logLevel = " + std::to_string(this->logLevel));
     }
 }
 
-void Logger::setLogDestination(short destination) {
+void Logger::setLogDestination(char destination) {
     if (destination == LOG_DEST_CONSOLE) {
         logFile->fileClose();
         delete logFile;
@@ -48,17 +48,17 @@ void Logger::setLogDestination(short destination) {
     this->logDestination = destination;
 }
 
-short Logger::getLogLevel() {
-    return logLevel;
-}
-
-void Logger::setLogFileName(std::string fileName) {
+bool Logger::setLogFileName(std::string fileName) {
+    if (fileName.substr(0, 1).compare("-") != std::string::npos) {
+        return false;
+    }
     if (fileName != this->logFileName) {
         logFile->fileClose();
         File* tmpLogFile = new File(logFileName, File::FILE_TXT, File::FILE_IO_IN);
         logFile = new File(logFileName, File::FILE_TXT, File::FILE_IO_OUT);
     }
     this->logFileName = fileName;
+    return true;
 }
 
 void Logger::logError(std::string message) {
