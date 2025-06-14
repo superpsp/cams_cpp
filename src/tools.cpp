@@ -1,4 +1,6 @@
-#include <time.h>
+#include <chrono>
+#include <random>
+#include <sstream>
 #include "tools.h"
 #include "logger.h"
 
@@ -125,14 +127,14 @@ std::string Tools::getSubStringBetweenSubStrings(std::string source, std::string
 
     found1 = source.find(substr1);
     found2 = source.find(substr2, found1 + substr1.length());
-    if (found1 != std::string::npos and found2 != std::string::npos) {
+    if (found1 != std::string::npos && found2 != std::string::npos) {
         return source.substr(found1 + substr1.length(), found2 - found1 - substr1.length());
     }
     else {
-        if (found1 != std::string::npos and returnTail) {
+        if (found1 != std::string::npos && returnTail) {
             return source.substr(found1 + substr1.length(), source.length() + 1 - found1 - substr1.length());
         }
-        if (found2 != std::string::npos and returnHead) {
+        if (found2 != std::string::npos && returnHead) {
             return source.substr(0, found2);
         }
     }
@@ -230,28 +232,38 @@ std::string Tools::padr(std::string source, size_t resultLength, char character)
     return result;
 }
 
-std::string Tools::getTime(short int shiftHours, short int shiftMinutes) {
-    time_t rawTime;
-    struct tm* timeInfo;
+std::string Tools::getTime() {
+    auto currentTime = std::chrono::system_clock::now();
+    auto currentTimeMs = std::chrono::time_point_cast<std::chrono::milliseconds>(currentTime);
+    auto epoch = currentTimeMs.time_since_epoch();
+    auto currentMs = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
+    auto localTime = std::chrono::system_clock::to_time_t(currentTime);
+    auto milliseconds = currentMs.count() % 1000;
+    char timeString[25];
+    strftime(timeString, sizeof(timeString), "%Y:%m:%d %T", std::localtime(&localTime));
+    sprintf(timeString + 19, ".%03d", static_cast<int>(milliseconds));
+    return timeString;
+}
 
-    time(&rawTime);
-    if (shiftHours == 99) {
-        timeInfo = localtime(&rawTime);
-    }
-    else {
-        timeInfo = gmtime(&rawTime);
-    }
+std::string Tools::getUUID() {
+    return getUUIDPart(8) + "-" + getUUIDPart(4) + "-" + getUUIDPart(4) + "-" + getUUIDPart(4) + "-" + getUUIDPart(12);
+}
 
-    return std::to_string(timeInfo->tm_year + 1900)
-        + "."
-        + padl(std::to_string(timeInfo->tm_mon + 1), 2, '0')
-        + "."
-        + padl(std::to_string(timeInfo->tm_mday), 2, '0')
-        + " "
-        + padl(std::to_string(timeInfo->tm_hour), 2, '0')
-        + ":"
-        + padl(std::to_string(timeInfo->tm_min), 2, '0')
-        + ":"
-        + padl(std::to_string(timeInfo->tm_sec), 2, '0')
-        ;
+std::string Tools::getUUIDPart(const char length) {
+    std::stringstream result;
+    for (auto i = 0; i < length; i++) {
+        auto rc = getRandomChar();
+        std::stringstream hexStream;
+        hexStream << std::hex << int(rc);
+        auto hex = hexStream.str();
+        result << (hex.length() < 2 ? '0' + hex : hex);
+    }
+    return result.str();
+}
+
+unsigned char Tools::getRandomChar() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, 255);
+    return static_cast<unsigned char>(dis(gen));
 }

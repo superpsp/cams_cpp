@@ -34,8 +34,8 @@ class Tools {
             , getIpRemovedZeros(std::string ip)
             , padl(std::string source, size_t resultLength, char character = ' ')
             , padr(std::string source, size_t resultLength, char character = ' ')
-            // TODO (psp#1#): To move values to a constant(s)
-            , getTime(short int shiftHours = 99, short int shiftMinutes = 0); // Local time by default
+            , getTime()
+            , getUUID();
     protected:
         Tools() {}
         Tools(const Tools&);
@@ -43,5 +43,7 @@ class Tools {
     friend class ToolsDestructor;
     private:
         static ToolsDestructor destructor;
+        static std::string getUUIDPart(const char length);
+        static unsigned char getRandomChar();
 
 };

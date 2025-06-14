@@ -22,18 +22,11 @@ class AppParameters {
         friend class AppParametersDestructor;
     private:
         static const char
-            PARAMETERS_NUMBER = 8;
-        std::string
-            parameters[PARAMETERS_NUMBER - 1]
-            , parameterDescriptions[PARAMETERS_NUMBER - 1];
+            PARAMETERS_NUMBER = 8
+            , PARAMETER_NOT_OK = 255;
 
         static AppParametersDestructor destructor;
+        char getCharValue(std::string value);
+        void printError(std::string message);
         void printHelp();
-        void printErrorMessage(std::string message);
-        bool validatePosition(std::string parameter, int position, int last);
-        bool validateParameter(std::string argument, std::string nextArgument);
-        void initParameters();
-        bool findAndValidate(std::string parameter);
-        bool findAndValidate(std::string parameter, short last);
-        void addPerameter(char position, std::string parameter, std::string description);
 };

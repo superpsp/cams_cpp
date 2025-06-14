@@ -31,6 +31,10 @@ std::string File::readLine() {
 	return line;
 }
 
+short File::checkFile() {
+	return checkFile(false, false);
+}
+
 short File::checkFile(short checkType, short checkMode) {
 	if (!file.is_open()) {
 		return FILE_NOT_OPENED;

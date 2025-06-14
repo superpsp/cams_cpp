@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
 
 	ToolsDestructor();
 	//DispatcherDestructor();
+	LOGGER.logDebug("main: deleting Logger");
 	LoggerDestructor();
-	FileSystemManagerDestructor();
+	//FileSystemManagerDestructor();
 }

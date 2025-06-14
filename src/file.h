@@ -21,6 +21,8 @@ public:
 	std::string readLine();
 	void fileClose();
 	~File();
+	short checkFile();
+	short checkFile(short checkType, short checkMode);
 
 private:
 	std::string path; // TODO Slash for Windows an UNIX
@@ -30,5 +32,4 @@ private:
 	short
 		mode
 		, type;
-	short checkFile(short checkType, short checkMode);
 };
