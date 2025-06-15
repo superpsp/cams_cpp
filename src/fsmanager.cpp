@@ -31,9 +31,9 @@ void FileSystemManager::copyFile(std::string source, std::string destination) {
 }
 
 bool FileSystemManager::registerFile(std::string filePath) {
-	if (!fileSet.empty()) {
-		fileSetIterator = fileSet.find(filePath);
-		if (fileSetIterator != fileSet.end()) {
+	if (!this->fileSet.empty()) {
+		this->fileSetIterator = this->fileSet.find(filePath);
+		if (this->fileSetIterator != this->fileSet.end()) {
 			return false;
 		}
 	}
@@ -42,10 +42,10 @@ bool FileSystemManager::registerFile(std::string filePath) {
 }
 
 void FileSystemManager::unRegisterFile(std::string filePath) {
-	if (!fileSet.empty()) {
-		fileSetIterator = fileSet.find(filePath);
-		if (fileSetIterator != fileSet.end()) {
-			fileSet.erase(fileSetIterator);
+	if (!this->fileSet.empty()) {
+		this->fileSetIterator = this->fileSet.find(filePath);
+		if (this->fileSetIterator != this->fileSet.end()) {
+			this->fileSet.erase(this->fileSetIterator);
 		}
 	}
 }
