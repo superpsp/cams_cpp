@@ -72,12 +72,12 @@ short File::checkFile(short checkType, short checkMode, bool isStatusOnly) {
 }
 
 void File::fileClose() {
+	FSMANAGER.unRegisterFile(path);
 	file.close();
 }
 
 File::~File() {
 	if (file.is_open()) {
-		std::cout << "File " << path << " closed" << std::endl;
 		fileClose();
 	}
 }

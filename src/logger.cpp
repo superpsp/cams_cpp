@@ -35,8 +35,8 @@ void Logger::setDefaultParameters() {
     this->logLevel = LOG_LEVEL_ERROR;
     //this->logLevel = LOG_LEVEL_DEBUG;
     this->logFileName = LOG_FILE_NAME;
-    //this->logDestination = LOG_DEST_FILE;
-    this->logDestination = LOG_DEST_CONSOLE;
+    this->logDestination = LOG_DEST_FILE;
+    //this->logDestination = LOG_DEST_CONSOLE;
     switchLogFile(this->logFileName, this->logFileName, true);
     loggerInstance->logDebug("Logger::setDefaultParameters: Parameters were set");
 }
@@ -93,24 +93,17 @@ void Logger::setLogLevel(char logLevel, bool force) {
 }
 
 void Logger::copyLogFileToConsole() {
-    //logDebug("Logger::copyLogFileToConsole: start");
     if (FSMANAGER.isFileExisting(this->logFileName)) {
-        //logDebug("Logger::copyLogFileToConsole: isFileExisting = true");
         if (logFile->checkFile() == logFile->FILE_OK) {
-            //logDebug("Logger::copyLogFileToConsole: logFile->FILE_OK");
             logFile->fileClose();
             delete logFile;
         }
         if (!FSMANAGER.isFileEmpty(this->logFileName)) {
-            //logDebug("Logger::copyLogFileToConsole: not isFileEmpty");
             File* tmpFile = new File(this->logFileName, File::FILE_TXT, File::FILE_IO_IN);
             if (!tmpFile->fileOpen()) {
                 logError("Can not open file " + this->logFileName);
             }
-            //logDebug("Logger::copyLogFileToConsole: tmpFile->checkFile() = "
-            //    + std::to_string(tmpFile->checkFile()) + ", tmpFile->getMode() = " + std::to_string(tmpFile->getMode()));
             while (tmpFile->checkFile() == tmpFile->FILE_OK) {
-                //logDebug("Logger::copyLogFileToConsole: line");
                 logText(tmpFile->readLine());
             }
             tmpFile->fileClose();
@@ -134,8 +127,8 @@ bool Logger::setLogDestination(char destination, bool isQuiet) {
             this->logDestination = LOG_DEST_CONSOLE;
             if (!isQuiet) {
                 logDebug("Logger::setLogDestination: destination was set to " + std::to_string(destination));
+                copyLogFileToConsole();
             }
-            copyLogFileToConsole();
         }
     } else if (destination == LOG_DEST_FILE) {
         if (this->logDestination != LOG_DEST_FILE) {

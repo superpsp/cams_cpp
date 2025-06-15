@@ -29,7 +29,7 @@ bool AppParameters::parseParameters(int argc, char* argv[]) {
 		}
 		if (argc -1 > PARAMETERS_NUMBER) {
 			printError("Allowed number of parameters with arguments is " + std::to_string(PARAMETERS_NUMBER)
-				+ ", but " + std::to_string(argc - 1) + " was provided in command " + executedCommand);
+				+ ", but " + std::to_string(argc - 1) + " were provided in command " + executedCommand);
 			return false;
 		}
 
@@ -51,8 +51,7 @@ bool AppParameters::parseParameters(int argc, char* argv[]) {
 				printHelp();
 				return false;
 			} else if (parameter.compare("--log_destination") == 0) {
-				if (i == argc - 1) {
-					printError("Parameter --log_destination requires an argument");
+				if (argumentIsEmpty(i, argc, parameter)) {
 					return false;
 				}
 				i++;
@@ -67,9 +66,8 @@ bool AppParameters::parseParameters(int argc, char* argv[]) {
 					return false;
 				}
 			} else if (parameter.compare("--log_file_name") == 0) {
-				message = "";
-				if (i == argc - 1) {
-					message = "Parameter --log_file_name requires an argument";
+				if (argumentIsEmpty(i, argc, parameter)) {
+					return false;
 				}
 				i++;
 				parameter = argv[i];
@@ -126,4 +124,12 @@ void AppParameters::printHelp() {
 	} else {
 		LOGGER.logError("AppParameters::printHelp: Can not switch destination to console");
 	}
+}
+
+bool AppParameters::argumentIsEmpty(int i, int argc, std::string parameter) {
+	if (i == argc - 1) {
+		printError("Parameter " + parameter + " requires an argument");
+		return true;
+	}
+	return false;
 }

@@ -27,6 +27,8 @@ class AppParameters {
 
         static AppParametersDestructor destructor;
         char getCharValue(std::string value);
-        void printError(std::string message);
-        void printHelp();
+        void
+            printError(std::string message)
+            , printHelp();
+        bool argumentIsEmpty(int i, int argc, std::string parameter);
 };
