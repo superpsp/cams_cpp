@@ -1,6 +1,9 @@
+#include <climits>
 #include "parameters.h"
+#include "tools.h"
 #include "logger.h"
 
+#define TOOLS Tools::getInstance()
 #define LOGGER Logger::getInstance()
 
 AppParameters* appParametersInstance = 0;
@@ -36,7 +39,7 @@ bool AppParameters::parseParameters(int argc, char* argv[]) {
 		std::string
 			parameter
 			, message;
-		char argument;
+		int argument;
 		for (int i = 1; i < argc; i++) {
 			parameter = argv[i];
 			LOGGER.logDebug("AppParameters::parseParameters: parameter = " + parameter);
@@ -56,13 +59,9 @@ bool AppParameters::parseParameters(int argc, char* argv[]) {
 				}
 				i++;
 				parameter = argv[i];
-				argument = getCharValue(parameter);
-				message = "";
-				if (argument == PARAMETER_NOT_OK || !LOGGER.setLogDestination(argument)) {
-					message = "Parameter --log_destination requires a valid argument, but " + parameter + " was provided";
-				}
-				if (!message.empty()) {
-					printError(message);
+				argument = TOOLS.getIntFromString(parameter);
+				if (argument == ULLONG_MAX || !LOGGER.setLogDestination(argument)) {
+					printError("Parameter --log_destination requires a valid argument, but " + parameter + " was provided");
 					return false;
 				}
 			} else if (parameter.compare("--log_file_name") == 0) {
@@ -88,16 +87,6 @@ bool AppParameters::parseParameters(int argc, char* argv[]) {
 }
 
 AppParameters::AppParameters(const AppParameters&){}
-
-char AppParameters::getCharValue(std::string value) {
-	if (value.compare("0") == 0) {
-		return 0;
-	}
-	else if (value.compare("1") == 0) {
-		return 1;
-	}
-	return PARAMETER_NOT_OK;
-}
 
 void AppParameters::printError(std::string message) {
 	LOGGER.logDebug("AppParameters::printError: " + message);

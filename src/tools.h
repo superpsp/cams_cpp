@@ -36,6 +36,7 @@ class Tools {
             , padr(std::string source, size_t resultLength, char character = ' ')
             , getTime()
             , getUUID();
+        unsigned long getIntFromString(std::string source);
     protected:
         Tools() {}
         Tools(const Tools&);
@@ -45,5 +46,5 @@ class Tools {
         static ToolsDestructor destructor;
         static std::string getUUIDPart(const char length);
         static unsigned char getRandomChar();
-
+        static bool isDigitValue(std::string value);
 };

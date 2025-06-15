@@ -112,8 +112,10 @@ void Logger::copyLogFileToConsole() {
     }
 }
 
-bool Logger::setLogDestination(char destination)
-{
+bool Logger::setLogDestination(char destination) {
+    if (destination > 2) {
+        return false;
+    }
     return setLogDestination(destination, false);
 }
 

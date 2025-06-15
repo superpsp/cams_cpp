@@ -1,6 +1,7 @@
 #include <chrono>
 #include <random>
 #include <sstream>
+#include <climits>
 #include "tools.h"
 #include "logger.h"
 
@@ -249,6 +250,16 @@ std::string Tools::getUUID() {
     return getUUIDPart(8) + "-" + getUUIDPart(4) + "-" + getUUIDPart(4) + "-" + getUUIDPart(4) + "-" + getUUIDPart(12);
 }
 
+unsigned long Tools::getIntFromString(std::string source) {
+    if (!isDigitValue) {
+        return false;
+    }
+    if (source > std::to_string(INT_MAX)) {
+        return ULLONG_MAX;
+    }
+    return (std::stoi(source));
+}
+
 std::string Tools::getUUIDPart(const char length) {
     std::stringstream result;
     for (auto i = 0; i < length; i++) {
@@ -266,4 +277,11 @@ unsigned char Tools::getRandomChar() {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, 255);
     return static_cast<unsigned char>(dis(gen));
+}
+
+bool Tools::isDigitValue(std::string value) {
+    if (value.length() > ULLONG_MAX) {
+        return false;
+    }
+    return std::all_of(value.begin(), value.end(), ::isdigit);
 }

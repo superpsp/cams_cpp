@@ -21,14 +21,12 @@ class AppParameters {
         ~AppParameters() {}
         friend class AppParametersDestructor;
     private:
-        static const char
-            PARAMETERS_NUMBER = 8
-            , PARAMETER_NOT_OK = 255;
-
+        static const char PARAMETERS_NUMBER = 8;
         static AppParametersDestructor destructor;
-        char getCharValue(std::string value);
         void
             printError(std::string message)
-            , printHelp();
-        bool argumentIsEmpty(int i, int argc, std::string parameter);
+            , printHelp()
+            , fillAllowedValues(char max);
+        bool
+            argumentIsEmpty(int i, int argc, std::string parameter);
 };
