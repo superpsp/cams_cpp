@@ -10,6 +10,7 @@ public:
 		, FILE_ZIP = 2
 		, FILE_IO_OUT = 0
 		, FILE_IO_IN = 1
+		, FILE_IO_APPEND = 2
 		, FILE_OK = 0
 		, FILE_NOT_OPENED = 1
 		, FILE_NOT_GOOD = 2
@@ -19,10 +20,13 @@ public:
 	File(std::string filePath, short filetype, short fileIOMode);
 	short writeLine(std::string line);
 	std::string readLine();
+	bool fileOpen();
 	void fileClose();
 	~File();
-	short checkFile();
-	short checkFile(short checkType, short checkMode);
+	short
+		checkFile()
+		, checkFile(short checkType, short checkMode, bool isStatusOnly)
+		, getMode();
 
 private:
 	std::string path; // TODO Slash for Windows an UNIX

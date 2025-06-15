@@ -1,19 +1,32 @@
 #include "file.h"
+#include "fsmanager.h"
+
+#define FSMANAGER FileSystemManager::getInstance()
 
 File::File(std::string filePath, short filetype, short fileIOMode) {
 	this->path = filePath;
 	this->type = filetype;
 	this->mode = fileIOMode;
-	// TODO Register in FileSystemManager to avoid duplicates
-	if (this->mode == FILE_IO_OUT) {
-		this->file.open(this->path, std::ios::out);
-	} else {
-		this->file.open(this->path, std::ios::in);
+}
+
+bool File::fileOpen() {
+	if (!FSMANAGER.registerFile(path)) {
+		return false;
 	}
+	if (mode == FILE_IO_OUT) {
+		file.open(path, std::ios::out);
+	} else if (mode == FILE_IO_IN) {
+		file.open(path, std::ios::in);
+	} else if (mode == FILE_IO_APPEND) {
+		file.open(path, std::ios::app);
+	} else {
+		return false;
+	}
+	return true;
 }
 
 short File::writeLine(std::string line) {
-	short checkResult = checkFile(FILE_TXT, FILE_IO_OUT);
+	short checkResult = checkFile(FILE_TXT, FILE_IO_OUT, false);
 	if (checkResult != FILE_OK) {
 		return checkResult;
 	}
@@ -22,7 +35,7 @@ short File::writeLine(std::string line) {
 }
 
 std::string File::readLine() {
-	short checkResult = checkFile(FILE_TXT, FILE_IO_IN);
+	short checkResult = checkFile(FILE_TXT, FILE_IO_IN, false);
 	if (checkResult != FILE_OK) {
 		return std::to_string(checkResult);
 	}
@@ -31,22 +44,29 @@ std::string File::readLine() {
 	return line;
 }
 
-short File::checkFile() {
-	return checkFile(false, false);
+short File::getMode() {
+	return mode;
 }
 
-short File::checkFile(short checkType, short checkMode) {
+short File::checkFile() {
+	return checkFile(0, 0, true);
+}
+
+short File::checkFile(short checkType, short checkMode, bool isStatusOnly) {
 	if (!file.is_open()) {
 		return FILE_NOT_OPENED;
 	}
 	if (!file.good()) {
 		return FILE_NOT_GOOD;
 	}
-	if (type != checkType) {
-		return FILE_TYPE_NOT_CORRECT;
-	}
-	if (mode != checkMode) {
-		return FILE_MODE_NOT_CORRECT;
+	if (!isStatusOnly) {
+		if (type != checkType) {
+			return FILE_TYPE_NOT_CORRECT;
+		}
+		if (checkMode == FILE_IO_IN && mode != checkMode
+			|| checkMode == FILE_IO_OUT && mode != FILE_IO_OUT && mode != FILE_IO_APPEND) {
+			return FILE_MODE_NOT_CORRECT;
+		}
 	}
 	return FILE_OK;
 }

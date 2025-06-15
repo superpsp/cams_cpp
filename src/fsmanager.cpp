@@ -1,6 +1,7 @@
 #include <filesystem>
-#include "fsmanager.h"
 #include <iostream>
+#include <set>
+#include "fsmanager.h"
 
 namespace fs = std::filesystem;
 
@@ -27,6 +28,30 @@ bool FileSystemManager::isFileExisting(std::string filePath) {
 
 void FileSystemManager::copyFile(std::string source, std::string destination) {
 	fs::copy_file(source, destination);
+}
+
+bool FileSystemManager::registerFile(std::string filePath) {
+	if (!fileSet.empty()) {
+		fileSetIterator = fileSet.find(filePath);
+		if (fileSetIterator != fileSet.end()) {
+			return false;
+		}
+	}
+	fileSet.insert(filePath);
+	return true;
+}
+
+void FileSystemManager::unRegisterFile(std::string filePath) {
+	if (!fileSet.empty()) {
+		fileSetIterator = fileSet.find(filePath);
+		if (fileSetIterator != fileSet.end()) {
+			fileSet.erase(fileSetIterator);
+		}
+	}
+}
+
+void FileSystemManager::renameFile(std::string source, std::string destination) {
+	fs::rename(source, destination);
 }
 
 void FileSystemManager::deleteFile(std::string filePath) {

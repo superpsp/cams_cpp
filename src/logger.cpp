@@ -32,16 +32,16 @@ Logger &Logger::getInstance() {
 }
 
 void Logger::setDefaultParameters() {
-    //this->logLevel = LOG_LEVEL_ERROR;
-    this->logLevel = LOG_LEVEL_DEBUG;
+    this->logLevel = LOG_LEVEL_ERROR;
+    //this->logLevel = LOG_LEVEL_DEBUG;
     this->logFileName = LOG_FILE_NAME;
-    this->logDestination = LOG_DEST_FILE;
+    //this->logDestination = LOG_DEST_FILE;
+    this->logDestination = LOG_DEST_CONSOLE;
     switchLogFile(this->logFileName, this->logFileName, true);
     loggerInstance->logDebug("Logger::setDefaultParameters: Parameters were set");
 }
 
 void Logger::switchLogFile(std::string oldName, std::string newName) {
-    logDebug("Logger::switchLogFile: oldFile = " + oldName + " newName = " + newName);
     switchLogFile(oldName, newName, false);
 }
 
@@ -49,40 +49,34 @@ void Logger::switchLogFile(std::string oldName, std::string newName, bool isNew)
     if (isNew) {
         this->logFileName = newName;
         logFile = new File(this->logFileName, File::FILE_TXT, File::FILE_IO_OUT);
+        if (!logFile->fileOpen()) {
+            logError("Can not open file " + this->logFileName);
+        }
         logDebug("Logger::switchLogFile: log file " + newName + " was created");
         return;
     }
-    logDebug("Logger::switchLogFile: oldName " + oldName + " newName = " + newName);
-    if (oldName.compare(newName) != 0 || oldName.compare(this->logFileName) == 0) {
-        if (FSMANAGER.isFileExisting(oldName) && logFile->checkFile() == logFile->FILE_OK) {
-            logFile->fileClose();
-            delete logFile;
-        logDebug("Logger::switchLogFile: oldFile " + oldName + " was closed");
-        }
-
-        this->logFileName = newName;
-        logFile = new File(this->logFileName, File::FILE_TXT, File::FILE_IO_OUT);
-
-        if (FSMANAGER.isFileExisting(oldName) && !FSMANAGER.isFileEmpty(oldName)) {
-            std::string tmpFileName = TOOLS.getUUID();
-            FSMANAGER.copyFile(oldName, tmpFileName);
-            logDebug("Logger::switchLogFile: oldFile = " + oldName + " was copied to tmpFileName = " + tmpFileName);
-
-            File* tmpFile = new File(tmpFileName, File::FILE_TXT, File::FILE_IO_IN);
-
-            while (tmpFile->checkFile() == tmpFile->FILE_OK) {
-                logFile->writeLine(tmpFile->readLine());
+    if (oldName.compare(newName) != 0 && oldName.compare(this->logFileName) == 0) {
+        if (FSMANAGER.isFileExisting(oldName)) {
+            if (logFile->checkFile() == logFile->FILE_OK) {
+                logFile->fileClose();
             }
-            logDebug("Logger::switchLogFile: content of tmpFileName = " + tmpFileName + " was copied to newName = " + newName);
-            delete tmpFile;
-            FSMANAGER.deleteFile(tmpFileName);
-            logDebug("Logger::switchLogFile: tmpFileName = " + tmpFileName + " was deleted");
-
-            if (oldName.compare(newName) != 0) {
-                FSMANAGER.deleteFile(oldName);
-                logDebug("Logger::switchLogFile: old file " + oldName + " was deleted");
+            if (FSMANAGER.isFileExisting(newName)) {
+                FSMANAGER.deleteFile(newName);
             }
+            FSMANAGER.renameFile(oldName, newName);
+            this->logFileName = newName;
+            logFile = new File(this->logFileName, File::FILE_TXT, File::FILE_IO_APPEND);
+            if (!logFile->fileOpen()) {
+                logError("Can not open file " + this->logFileName);
+            }
+            logDebug("Logger::switchLogFile: log file was switched from " + oldName + " to " + newName);
         }
+    } else if (oldName.compare(this->logFileName) == 0 && logFile->checkFile() != logFile->FILE_OK) {
+        logFile = new File(this->logFileName, File::FILE_TXT, File::FILE_IO_APPEND);
+        if (!logFile->fileOpen()) {
+            logError("Can not open file " + this->logFileName);
+        }
+        logDebug("Logger::switchLogFile: log file " + oldName + " was opened for append");
     }
 }
 
@@ -98,20 +92,58 @@ void Logger::setLogLevel(char logLevel, bool force) {
     }
 }
 
-bool Logger::setLogDestination(char destination) {
-    logDebug("Logger::setLogDestination: destination = " + std::to_string(destination));
+void Logger::copyLogFileToConsole() {
+    //logDebug("Logger::copyLogFileToConsole: start");
+    if (FSMANAGER.isFileExisting(this->logFileName)) {
+        //logDebug("Logger::copyLogFileToConsole: isFileExisting = true");
+        if (logFile->checkFile() == logFile->FILE_OK) {
+            //logDebug("Logger::copyLogFileToConsole: logFile->FILE_OK");
+            logFile->fileClose();
+            delete logFile;
+        }
+        if (!FSMANAGER.isFileEmpty(this->logFileName)) {
+            //logDebug("Logger::copyLogFileToConsole: not isFileEmpty");
+            File* tmpFile = new File(this->logFileName, File::FILE_TXT, File::FILE_IO_IN);
+            if (!tmpFile->fileOpen()) {
+                logError("Can not open file " + this->logFileName);
+            }
+            //logDebug("Logger::copyLogFileToConsole: tmpFile->checkFile() = "
+            //    + std::to_string(tmpFile->checkFile()) + ", tmpFile->getMode() = " + std::to_string(tmpFile->getMode()));
+            while (tmpFile->checkFile() == tmpFile->FILE_OK) {
+                //logDebug("Logger::copyLogFileToConsole: line");
+                logText(tmpFile->readLine());
+            }
+            tmpFile->fileClose();
+            delete tmpFile;
+        }
+    }
+}
+
+bool Logger::setLogDestination(char destination)
+{
+    return setLogDestination(destination, false);
+}
+
+bool Logger::setLogDestination(char destination, bool isQuiet) {
+    if (!isQuiet) {
+        logDebug("Logger::setLogDestination: destination = " + std::to_string(destination));
+    }
 
     if (destination == LOG_DEST_CONSOLE) {
         if (this->logDestination != LOG_DEST_CONSOLE) {
-            logDebug("Logger::setLogDestination: destination was set to " + std::to_string(destination));
             this->logDestination = LOG_DEST_CONSOLE;
-            delete logFile;
+            if (!isQuiet) {
+                logDebug("Logger::setLogDestination: destination was set to " + std::to_string(destination));
+            }
+            copyLogFileToConsole();
         }
     } else if (destination == LOG_DEST_FILE) {
         if (this->logDestination != LOG_DEST_FILE) {
-            logDebug("Logger::setLogDestination: destination was set to " + std::to_string(destination));
             this->logDestination = LOG_DEST_FILE;
             switchLogFile(this->logFileName, this->logFileName);
+            if (!isQuiet) {
+                logDebug("Logger::setLogDestination: destination was set to " + std::to_string(destination));
+            }
         }
     }else {
         logError("Logger::setLogDestination: unknown destination " + std::to_string(destination));
@@ -180,7 +212,7 @@ void Logger::logText(std::string message) {
             if (writeResult == logFile->FILE_TYPE_NOT_CORRECT) {
                 errorMessage = " is not a TXT file";
             }
-            std::cout << TOOLS.getTime() << " " << "[ERROR] " << "Logger::logText: " << logFileName << errorMessage << std::endl;
+            std::cout << TOOLS.getTime() << " " << "[ERROR] " << "Logger::logText: " << this->logFileName << errorMessage << std::endl;
             std::cout << message << std::endl;
         }
     }

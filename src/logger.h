@@ -16,7 +16,8 @@ class Logger {
         static Logger& getInstance();
         bool
             setLogFileName(std::string fileName)
-            , setLogDestination(char destination);
+            , setLogDestination(char destination)
+            , setLogDestination(char destination, bool isQuiet);
         void
             setLogLevel(char logLevel)
             , setLogLevel(char logLevel, bool force)
@@ -49,5 +50,6 @@ private:
         logPrint(std::string message, std::string level)
         , setDefaultParameters()
         , switchLogFile(std::string oldName, std::string newName)
-        , switchLogFile(std::string oldName, std::string newName, bool isNew);
+        , switchLogFile(std::string oldName, std::string newName, bool isNew)
+        , copyLogFileToConsole();
 };

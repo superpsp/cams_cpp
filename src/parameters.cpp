@@ -103,15 +103,14 @@ char AppParameters::getCharValue(std::string value) {
 
 void AppParameters::printError(std::string message) {
 	LOGGER.logDebug("AppParameters::printError: " + message);
-	if (LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE)) {
+	if (LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE, true)) {
 		LOGGER.logText(message);
 		printHelp();
 	}
 }
 
 void AppParameters::printHelp() {
-	LOGGER.logDebug("AppParameters::printHelp: help");
-	if (LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE)) {
+	if (LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE, true)) {
 		LOGGER.logText("Usage: cams <options>");
 			LOGGER.logText("<options>:");
 			LOGGER.logText("\t -h --help\t\t\t\tShow help");
@@ -121,7 +120,7 @@ void AppParameters::printHelp() {
 			LOGGER.logText("\t --log_destination destination\t\tdestination = 0 - console, destination = 1 - file (default 1)");
 			LOGGER.logText("\t --log_file_name log_file_name\t\tdefault log_file_name = cams.log, log_file_name can not have '-' as a first character");
 			LOGGER.logText("\t --ip_file_name ip_file_name\t\tdefault ip_file_name = ips.txt, ip_file_name can not have '-' as a first character");
-		if (!LOGGER.setLogDestination(LOGGER.LOG_DEST_FILE)) {
+		if (!LOGGER.setLogDestination(LOGGER.LOG_DEST_FILE, true)) {
 			LOGGER.logError("AppParameters::printHelp: Can not switch destination to file");
 		}
 	} else {

@@ -1,5 +1,4 @@
-#include <string>
-
+#include <set>
 class FileSystemManager;
 
 class FileSystemManagerDestructor {
@@ -15,10 +14,13 @@ public:
     static FileSystemManager& getInstance();
     bool
         isFileExisting(std::string filePath)
-        , isFileEmpty(std::string filePath);
+        , isFileEmpty(std::string filePath)
+        , registerFile(std::string filePath);
     void
         copyFile(std::string source, std::string destination)
-        , deleteFile(std::string filePath);
+        , renameFile(std::string source, std::string destination)
+        , deleteFile(std::string filePath)
+        , unRegisterFile(std::string filePath);
 protected:
     FileSystemManager() {}
     FileSystemManager(const FileSystemManager&);
@@ -27,4 +29,6 @@ protected:
     friend class FileSystemManagerDestructor;
 private:
     static FileSystemManagerDestructor destructor;
+    std::set<std::string> fileSet;
+    std::set<std::string>::iterator fileSetIterator;
 };
