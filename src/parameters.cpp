@@ -24,7 +24,7 @@ AppParameters& AppParameters::getInstance() {
 	return *appParametersInstance;
 }
 
-bool AppParameters::parseParameters(int argc, char* argv[]) {
+bool AppParameters::parseParameters(int argc, char* argv[]) { // TODO: command ./cams -d -help don't write to log
 	std::string executedCommand = argv[0];
 	if (argc && argc > 1) {
 		for (int i = 1; i < argc; i++) {
@@ -117,7 +117,7 @@ void AppParameters::printHelp() {
 			LOGGER.logText("\t --warning\t\t\t\tWarning logging level (the deepest level will be used from the provided ones)");
 			LOGGER.logText("\t --log_destination destination\t\tdestination = 0 - console, destination = 1 - file (default 1)");
 			LOGGER.logText("\t --log_file_name log_file_name\t\tdefault log_file_name = cams.log, log_file_name can not have '-' as a first character");
-			LOGGER.logText("\t --number_of_devices number_of_devices\tdefault number_of_devices = 200 (it is not recommend to increase), maximum number_of_devices: " + std::to_string(ULLONG_MAX));
+			LOGGER.logText("\t --number_of_devices number_of_devices\tdefault number_of_devices = 200 (it is not recommended to increase), maximum number_of_devices: " + std::to_string(ULLONG_MAX));
 			LOGGER.logText("\t --ip_file_name ip_file_name\t\tdefault ip_file_name = ips.txt, ip_file_name can not have '-' as a first character");
 		if (!LOGGER.setLogDestination(LOGGER.LOG_DEST_FILE, true)) {
 			LOGGER.logError("AppParameters::printHelp: Can not switch destination to file");

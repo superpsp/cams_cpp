@@ -12,10 +12,10 @@ unsigned char FileText::open() {
 	if (getMode() == FILE_IO_APPEND) {
 		setMode(FILE_IO_OUT);
 		result = File::check();
-		setMode(FILE_IO_APPEND);
 		if (result != FILE_OK) {
 			return result;
 		}
+		setMode(FILE_IO_APPEND);
 	}
 	result = File::check();
 	if (result == FILE_OK) {
@@ -114,7 +114,10 @@ unsigned char FileText::copyToConsole() {
 				std::cout << line << std::endl;
 			}
 		}
-		setMode(oldMode);
+		if (oldMode != FILE_IO_IN) {
+			setMode(FILE_IO_APPEND);
+			open();
+		}
 		result = check();
 	}
 	return result;

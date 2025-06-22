@@ -49,6 +49,7 @@ void Logger::openLogFile() {
             delete logFile;
         }
     }
+    logDebug("Logger::openLogFile: File " + logFileName + " was opened");
 }
 
 void Logger::setLogLevel(char logLevel) {
