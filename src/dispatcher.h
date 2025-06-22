@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 
 class Dispatcher;
@@ -13,7 +14,7 @@ private:
 class Dispatcher {
 public:
 	static Dispatcher& getInstance();
-	bool initialize(std::string ipFile, unsigned int numberOfDevices, unsigned int deviceLifetimeSeconds, unsigned int deviceLifeTimeCheckSeconds);
+	void run();
 protected:
 	Dispatcher& operator = (Dispatcher&);
 
@@ -22,9 +23,11 @@ protected:
 	~Dispatcher(){}
 	friend class DispatcherDestructor;
 private:
-	std::string ipFile;
+	std::string ipFileName;
 	unsigned int numberOfDevices;
-	unsigned int deviceLifetimeSeconds;
-	unsigned int deviceLifeTimeCheckSeconds;
-	void registerDevice();
+	const std::string IP_FILE_NAME = "ips.txt";
+	const unsigned int NUMBER_OF_DEVICES = 200;
+	void
+		initialize()
+		, registerDevice();
 };

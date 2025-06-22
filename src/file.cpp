@@ -1,83 +1,77 @@
+#include <filesystem>
 #include "file.h"
-#include "fsmanager.h"
 
-#define FSMANAGER FileSystemManager::getInstance()
+namespace fs = std::filesystem;
 
-File::File(std::string filePath, short filetype, short fileIOMode) {
-	this->path = filePath;
-	this->type = filetype;
-	this->mode = fileIOMode;
+void File::setPath(std::string path) {
+	this->path = path;
 }
 
-bool File::fileOpen() {
-	if (!FSMANAGER.registerFile(path)) {
-		return false;
-	}
-	if (mode == FILE_IO_OUT) {
-		file.open(path, std::ios::out);
-	} else if (mode == FILE_IO_IN) {
-		file.open(path, std::ios::in);
-	} else if (mode == FILE_IO_APPEND) {
-		file.open(path, std::ios::app);
-	} else {
-		return false;
-	}
-	return true;
+std::string File::getPath() {
+	return std::string();
 }
 
-short File::writeLine(std::string line) {
-	short checkResult = checkFile(FILE_TXT, FILE_IO_OUT, false);
-	if (checkResult != FILE_OK) {
-		return checkResult;
-	}
-	this->file << line << std::endl;
-	return FILE_OK;
+void File::setMode(unsigned char mode) {
+	this->mode = mode;
 }
 
-std::string File::readLine() {
-	short checkResult = checkFile(FILE_TXT, FILE_IO_IN, false);
-	if (checkResult != FILE_OK) {
-		return std::to_string(checkResult);
-	}
-	std::string line;
-	std::getline(file, line);
-	return line;
-}
-
-short File::getMode() {
+unsigned char File::getMode() {
 	return mode;
 }
 
-short File::checkFile() {
-	return checkFile(0, 0, true);
+void File::setType(unsigned char type) {
+	this->type = type;
 }
 
-short File::checkFile(short checkType, short checkMode, bool isStatusOnly) {
-	if (!file.is_open()) {
-		return FILE_NOT_OPENED;
-	}
-	if (!file.good()) {
-		return FILE_NOT_GOOD;
-	}
-	if (!isStatusOnly) {
-		if (type != checkType) {
-			return FILE_TYPE_NOT_CORRECT;
+unsigned char File::getType() {
+	return type;
+}
+unsigned char File::check() {
+	unsigned char result = FILE_OK;
+
+	if (fs::exists(path)) {
+		if (mode = FILE_IO_OUT) {
+			result = FILE_ERROR_EXISTS;
 		}
-		if (checkMode == FILE_IO_IN && mode != checkMode
-			|| checkMode == FILE_IO_OUT && mode != FILE_IO_OUT && mode != FILE_IO_APPEND) {
-			return FILE_MODE_NOT_CORRECT;
+	} else {
+		if (mode = FILE_IO_IN) {
+			result = FILE_ERROR_NOT_EXISTS;
 		}
 	}
-	return FILE_OK;
+	return result;
 }
 
-void File::fileClose() {
-	FSMANAGER.unRegisterFile(path);
-	file.close();
+std::string File::getErrorMessage(unsigned char code) {
+	std::string result;
+	switch (code) {
+		FILE_ERROR_EXISTS:
+			result = " is existing";
+			break;
+		FILE_ERROR_NOT_EXISTS:
+			result = " is not existing";
+			break;
+		FILE_ERROR_RENAME:
+			result = " can't be renamed (either source file is not existing or taget file is existing)";
+			break;
+	default:
+			result = FILE_ERROR_UNSUPPORTED;
+	}
+	return result;
+}
+
+unsigned char File::rename(std::string path) {
+	unsigned char result = FILE_OK;
+	if (this->path.compare(path) != 0) {
+		if (!fs::exists(path) && fs::exists(this->path)) {
+			fs::rename(this->path, path);
+			this->path = path;
+		}
+		else {
+			result = FILE_ERROR_RENAME;
+		}
+	}
+	return result;
 }
 
 File::~File() {
-	if (file.is_open()) {
-		fileClose();
-	}
 }

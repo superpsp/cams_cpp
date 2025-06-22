@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 
 class Logger;
@@ -14,6 +15,7 @@ class Logger {
     public:
         Logger& operator = (Logger&);
         static Logger& getInstance();
+        void stop();
         bool
             setLogFileName(std::string fileName)
             , setLogDestination(char destination)
@@ -49,7 +51,5 @@ private:
     void 
         logPrint(std::string message, std::string level)
         , setDefaultParameters()
-        , switchLogFile(std::string oldName, std::string newName)
-        , switchLogFile(std::string oldName, std::string newName, bool isNew)
-        , copyLogFileToConsole();
+        , openLogFile();
 };

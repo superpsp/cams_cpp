@@ -18,7 +18,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable (
 	cams "src/cams.cpp"
 	"src/tools.h" "src/tools.cpp"
-	 "src/fsmanager.h" "src/fsmanager.cpp"
 	"src/logger.h" "src/logger.cpp"
 	"src/parameters.h" "src/parameters.cpp"
 	 "src/dispatcher.h" "src/dispatcher.cpp"
