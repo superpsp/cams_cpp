@@ -15,7 +15,6 @@ class Logger {
     public:
         Logger& operator = (Logger&);
         static Logger& getInstance();
-        void stop();
         bool
             setLogFileName(std::string fileName)
             , setLogDestination(char destination)

@@ -18,6 +18,5 @@ int main(int argc, char* argv[]) {
 	LOGGER.logDebug("main: deleting Dispatcher");
 	DispatcherDestructor();
 	LOGGER.logDebug("main: deleting Logger");
-	LOGGER.stop();
 	LoggerDestructor();
 }

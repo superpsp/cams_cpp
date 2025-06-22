@@ -10,6 +10,7 @@ FileText *logFile = 0;
 
 LoggerDestructor::~LoggerDestructor() {
     delete loggerInstance;
+    delete logFile;
 }
 
 void LoggerDestructor::initialize(Logger* p) {
@@ -44,14 +45,10 @@ void Logger::openLogFile() {
         openResult = logFile->open();
         if (openResult != File::FILE_OK) {
             logDestination = LOG_DEST_CONSOLE;
-            logError("File " + logFileName + logFile->getErrorMessage(openResult));
+            logError("Logger::openLogFile: File " + logFileName + logFile->getErrorMessage(openResult));
             delete logFile;
         }
     }
-}
-
-void Logger::stop() {
-    delete logFile;
 }
 
 void Logger::setLogLevel(char logLevel) {

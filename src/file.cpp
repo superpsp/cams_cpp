@@ -8,7 +8,7 @@ void File::setPath(std::string path) {
 }
 
 std::string File::getPath() {
-	return std::string();
+	return path;
 }
 
 void File::setMode(unsigned char mode) {
@@ -71,9 +71,6 @@ unsigned char File::rename(std::string path) {
 		}
 	}
 	return result;
-}
-
-File::File(std::string path, unsigned char mode) {
 }
 
 File::~File() {
