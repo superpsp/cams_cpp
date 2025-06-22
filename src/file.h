@@ -20,6 +20,7 @@ public:
 		, FILE_ERROR_RENAME = 7;
 	const std::string FILE_ERROR_UNSUPPORTED = " is unsupported error";
 
+	File(std::string path, unsigned char mode);
 	~File();
 
 protected:

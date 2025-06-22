@@ -44,13 +44,13 @@ unsigned char File::check() {
 std::string File::getErrorMessage(unsigned char code) {
 	std::string result;
 	switch (code) {
-		FILE_ERROR_EXISTS:
+		case FILE_ERROR_EXISTS:
 			result = " is existing";
 			break;
-		FILE_ERROR_NOT_EXISTS:
+		case FILE_ERROR_NOT_EXISTS:
 			result = " is not existing";
 			break;
-		FILE_ERROR_RENAME:
+		case FILE_ERROR_RENAME:
 			result = " can't be renamed (either source file is not existing or taget file is existing)";
 			break;
 	default:
@@ -71,6 +71,9 @@ unsigned char File::rename(std::string path) {
 		}
 	}
 	return result;
+}
+
+File::File(std::string path, unsigned char mode) {
 }
 
 File::~File() {
