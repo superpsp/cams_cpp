@@ -20,7 +20,7 @@ void LoggerDestructor::initialize(Logger* p) {
 Logger &Logger::getInstance() {
     if (!loggerInstance) {
         loggerInstance = new Logger();
-        loggerInstance->logDebug("Logger::getInstance: Instance created");
+        //loggerInstance->logDebug("Logger::getInstance: Instance created");
         loggerInstance->setDefaultParameters();
     }
     return *loggerInstance;
@@ -28,7 +28,7 @@ Logger &Logger::getInstance() {
 
 void Logger::setDefaultParameters() {
     logLevel = LOG_LEVEL_ERROR;
-    //logLevel = LOG_LEVEL_DEBUG;
+    //loggerInstance->logLevel = LOG_LEVEL_DEBUG;
     logFileName = LOG_FILE_NAME;
     logDestination = LOG_DEST_FILE;
     //logDestination = LOG_DEST_CONSOLE;
@@ -39,15 +39,9 @@ void Logger::setDefaultParameters() {
 void Logger::openLogFile() {
     logFile = new FileText(logFileName, File::FILE_IO_OUT);
     unsigned char openResult = logFile->open();
-    if (openResult == File::FILE_ERROR_EXISTS) {
-        delete logFile;
-        logFile = new FileText(logFileName, FileText::FILE_IO_APPEND);
-        openResult = logFile->open();
-        if (openResult != File::FILE_OK) {
-            logDestination = LOG_DEST_CONSOLE;
-            logError("Logger::openLogFile: File " + logFileName + logFile->getErrorMessage(openResult));
-            delete logFile;
-        }
+    if (openResult != File::FILE_OK) {
+        logDestination = LOG_DEST_CONSOLE;
+        logError("Logger::openLogFile: File " + logFileName + logFile->getErrorMessage(openResult));
     }
     logDebug("Logger::openLogFile: File " + logFileName + " was opened");
 }
@@ -82,13 +76,11 @@ bool Logger::setLogDestination(char destination, bool isQuiet) {
             if (!isQuiet) {
                 logDebug("Logger::setLogDestination: destination was set to " + std::to_string(destination));
                 logFile->copyToConsole();
-                delete logFile;
             }
         }
     } else if (destination == LOG_DEST_FILE) {
         if (this->logDestination != LOG_DEST_FILE) {
             this->logDestination = LOG_DEST_FILE;
-            openLogFile();
             if (!isQuiet) {
                 logDebug("Logger::setLogDestination: destination was set to " + std::to_string(destination));
             }

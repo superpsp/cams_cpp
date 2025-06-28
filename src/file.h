@@ -10,7 +10,7 @@ public:
 		, FILE_ZIP = 2
 		, FILE_IO_OUT = 0
 		, FILE_IO_IN = 1
-		//, FILE_IO_APPEND = 2
+		, FILE_IO_APPEND = 2
 		//, FILE_ERROR_NOT_OPEN = 1
 		//, FILE_ERROR_NOT_GOOD = 2
 		//, FILE_ERROR_MODE_NOT_CORRECT = 3
@@ -26,7 +26,8 @@ protected:
 	void
 		setPath(std::string path)
 		, setMode(unsigned char mode)
-		, setType(unsigned char type);
+		, setType(unsigned char type)
+		, deleteFile();
 	std::string getPath();
 	unsigned char
 		getMode()

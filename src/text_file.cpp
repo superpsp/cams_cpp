@@ -9,25 +9,24 @@ FileText::FileText(std::string path, unsigned char mode) {
 
 unsigned char FileText::open() {
 	unsigned char result;
-	if (getMode() == FILE_IO_APPEND) {
-		setMode(FILE_IO_OUT);
-		result = File::check();
-		if (result != FILE_OK) {
-			return result;
-		}
-		setMode(FILE_IO_APPEND);
+	if (getMode() == FILE_IO_OUT) {
+		deleteFile();
 	}
 	result = File::check();
 	if (result == FILE_OK) {
 		if (getMode() == FILE_IO_OUT) {
 			file.open(getPath(), std::ios::out);
-		} else if (getMode() == FILE_IO_IN) {
+			file.close();
+			setMode(FILE_IO_APPEND);
+		} 
+		if (getMode() == FILE_IO_IN) {
 			file.open(getPath(), std::ios::in);
-		} else if (getMode() == FILE_IO_APPEND) {
+		}
+		if (getMode() == FILE_IO_APPEND) {
 			file.open(getPath(), std::ios::app);
 		}
+		result = check();
 	}
-	result = check();
 	return result;
 }
 
@@ -91,6 +90,7 @@ unsigned char FileText::rename(std::string path) {
 	if (result == FILE_OK) {
 		file.close();
 		File::rename(path);
+		setPath(path);
 		setMode(FILE_IO_APPEND);
 		open();
 	}
@@ -104,20 +104,17 @@ unsigned char FileText::copyToConsole() {
 		if (file.is_open()) {
 			file.close();
 		}
+		std::string line;
 		setMode(FILE_IO_IN);
 		open();
-		result = check();
-		if (result == FILE_OK) {
-			std::string line;
-			while (result == FILE_OK) {
-				std::getline(file, line);
-				std::cout << line << std::endl;
-			}
+		while (result == FILE_OK) {
+			std::getline(file, line);
+			std::cout << line << std::endl;
+			result = check();
 		}
-		if (oldMode != FILE_IO_IN) {
-			setMode(FILE_IO_APPEND);
-			open();
-		}
+		file.close();
+		setMode(FILE_IO_APPEND);
+		open();
 		result = check();
 	}
 	return result;

@@ -30,11 +30,11 @@ unsigned char File::check() {
 	unsigned char result = FILE_OK;
 
 	if (fs::exists(path)) {
-		if (mode = FILE_IO_OUT) {
+		if (mode == FILE_IO_OUT && mode != FILE_IO_APPEND) {
 			result = FILE_ERROR_EXISTS;
 		}
 	} else {
-		if (mode = FILE_IO_IN) {
+		if (mode == FILE_IO_IN) {
 			result = FILE_ERROR_NOT_EXISTS;
 		}
 	}
@@ -71,6 +71,12 @@ unsigned char File::rename(std::string path) {
 		}
 	}
 	return result;
+}
+
+void File::deleteFile() {
+	if (fs::exists(path)) {
+		fs::remove(path);
+	}
 }
 
 File::~File() {
