@@ -20,9 +20,10 @@ add_executable (
 	"src/tools.h" "src/tools.cpp"
 	"src/logger.h" "src/logger.cpp"
 	"src/parameters.h" "src/parameters.cpp"
-	 "src/dispatcher.h" "src/dispatcher.cpp"
-	 "src/file.h" "src/file.cpp"
-	 "src/text_file.h" "src/text_file.cpp")
+	"src/file.h" "src/file.cpp"
+	"src/text_file.h" "src/text_file.cpp"
+	"src/dispatcher.h" "src/dispatcher.cpp"
+	"src/source.h" "src/source.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET cams PROPERTY CXX_STANDARD 20)
