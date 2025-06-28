@@ -2,9 +2,11 @@
 #include "parameters.h"
 #include "tools.h"
 #include "logger.h"
+#include "dispatcher.h"
 
 #define TOOLS Tools::getInstance()
 #define LOGGER Logger::getInstance()
+#define DISPATCHER Dispatcher::getInstance()
 
 AppParameters* appParametersInstance = 0;
 
@@ -60,7 +62,7 @@ bool AppParameters::parseParameters(int argc, char* argv[]) { // TODO: command .
 				i++;
 				parameter = argv[i];
 				argument = TOOLS.getIntFromString(parameter);
-				if (argument == ULLONG_MAX || !LOGGER.setLogDestination(argument)) {
+				if (argument >= UCHAR_MAX || !LOGGER.setLogDestination(argument)) {
 					printError("Parameter --log_destination requires a valid argument, but " + parameter + " was provided");
 					return false;
 				}
@@ -71,7 +73,9 @@ bool AppParameters::parseParameters(int argc, char* argv[]) { // TODO: command .
 				i++;
 				parameter = argv[i];
 				argument = TOOLS.getIntFromString(parameter);
-				if (argument == ULLONG_MAX || !LOGGER.setLogDestination(argument)) {
+				if (argument < ULLONG_MAX) {
+					DISPATCHER.setNumberOfDevices(argument);
+				} else {
 					printError("Parameter --number_of_devices requires a valid argument, but " + parameter + " was provided");
 					return false;
 				}

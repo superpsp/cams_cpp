@@ -14,7 +14,8 @@ private:
 class Dispatcher {
 public:
 	static Dispatcher& getInstance();
-	void run();
+	void setNumberOfDevices(unsigned long number);
+	bool run();
 protected:
 	Dispatcher& operator = (Dispatcher&);
 
@@ -27,7 +28,8 @@ private:
 	unsigned int numberOfDevices;
 	const std::string IP_FILE_NAME = "ips.txt";
 	const unsigned int NUMBER_OF_DEVICES = 200;
+	bool openIpFile();
 	void
-		initialize()
+		setDefaultParameters()
 		, registerDevice();
 };
