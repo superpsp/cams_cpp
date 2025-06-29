@@ -22,7 +22,7 @@ protected:
 
 	Dispatcher() {}
 	Dispatcher(const Dispatcher&);
-	~Dispatcher(){}
+	~Dispatcher() {}
 	friend class DispatcherDestructor;
 private:
 	const unsigned int NUMBER_OF_DEVICES = 200;

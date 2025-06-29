@@ -10,13 +10,14 @@ FileText *logFile = 0;
 
 LoggerDestructor::~LoggerDestructor() {
     delete loggerInstance;
-    if (logFile != NULL) {
-        delete logFile;
-    }
 }
 
-void LoggerDestructor::initialize(Logger* p) {
+void LoggerDestructor::initialize(Logger* p) { // TODO: delete log file
     loggerInstance = p;
+    //loggerInstance->logDebug("LoggerDestructor::~LoggerDestructor: Deleting logFile");
+    //if (loggerInstance.logFile != NULL) {
+    //    delete loggerInstance.logFile;
+    //}
 }
 
 Logger &Logger::getInstance() {

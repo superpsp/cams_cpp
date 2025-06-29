@@ -15,7 +15,7 @@ class Source {
 			, setFileName(unsigned char target, std::string name);
 	private:
 		unsigned char source;
-		const std::string IP_FILE_NAME = "ips.txt";
+		const std::string SOURCE_IP_FILE_NAME = "ips.txt";
 		std::string ipFileName;
 		FileText* ipFile = 0;
 		void

@@ -7,9 +7,6 @@ Dispatcher* dispatcherInstance = 0;
 
 
 DispatcherDestructor::~DispatcherDestructor() {
-	if (dispatcherInstance->source != NULL) {
-		delete dispatcherInstance->source;
-	}
 	LOGGER.logDebug("DispatcherDestructor::~DispatcherDestructor: Instance deleted");
 	delete dispatcherInstance;
 }
@@ -30,6 +27,7 @@ Dispatcher& Dispatcher::getInstance() {
 void Dispatcher::setDefaultParameters() {
 	numberOfDevices = NUMBER_OF_DEVICES;
 	source = new Source();
+	LOGGER.logDebug("Dispatcher::setDefaultParameters: source = " + std::to_string(source->SOURCE_DB));
 }
 
 void Dispatcher::setNumberOfDevices(unsigned long number) {
@@ -38,6 +36,10 @@ void Dispatcher::setNumberOfDevices(unsigned long number) {
 
 bool Dispatcher::run() {
 	LOGGER.logDebug("Dispatcher::run: Start");
+	if (source != NULL) {
+		LOGGER.logDebug("Dispatcher::run: Deleting source");
+		delete source;
+	}
 	LOGGER.logDebug("Dispatcher::run: Stop");
 	return true;
 }
