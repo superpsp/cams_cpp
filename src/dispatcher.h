@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "source.h"
 
 class Dispatcher;
 
@@ -24,11 +25,9 @@ protected:
 	~Dispatcher(){}
 	friend class DispatcherDestructor;
 private:
-	std::string ipFileName;
-	unsigned int numberOfDevices;
-	const std::string IP_FILE_NAME = "ips.txt";
 	const unsigned int NUMBER_OF_DEVICES = 200;
-	bool openIpFile();
+	unsigned int numberOfDevices;
+	Source* source = 0;
 	void
 		setDefaultParameters()
 		, registerDevice();

@@ -10,7 +10,9 @@ FileText *logFile = 0;
 
 LoggerDestructor::~LoggerDestructor() {
     delete loggerInstance;
-    delete logFile;
+    if (logFile != NULL) {
+        delete logFile;
+    }
 }
 
 void LoggerDestructor::initialize(Logger* p) {

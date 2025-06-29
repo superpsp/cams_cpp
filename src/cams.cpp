@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
 	if (APPPARAMETERS.parseParameters(argc, argv)) {
 		LOGGER.logDebug("main: deleting AppParameters");
 		AppParametersDestructor();
-		if (DISPATCHER.run()) {
+		if (!DISPATCHER.run()) {
 			LOGGER.logError("main: Error in Dispatcher");
 		}
 	}
