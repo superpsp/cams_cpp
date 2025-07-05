@@ -8,22 +8,23 @@
 #define LOGGER Logger::getInstance()
 #define DISPATCHER Dispatcher::getInstance()
 
-AppParameters* appParametersInstance = 0;
+std::mutex appParametersMutex;
 
 AppParametersDestructor::~AppParametersDestructor() {
-	LOGGER.logDebug("AppParametersDestructor: Instance deleted");
-	delete appParametersInstance;
+	LOGGER->logDebug("AppParametersDestructor: Instance deleted");
+	//delete appParametersInstance;
 }
 
 void AppParametersDestructor::initialize(AppParameters* p) {
 	appParametersInstance = p;
 }
 
-AppParameters& AppParameters::getInstance() {
+AppParameters* AppParameters::getInstance() {
+	std::lock_guard<std::mutex> lock(appParametersMutex);
 	if (!appParametersInstance) {
-		appParametersInstance = new AppParameters();
+		appParametersInstance = std::unique_ptr<AppParameters>(new AppParameters());
 	}
-	return *appParametersInstance;
+	return appParametersInstance.get();
 }
 
 bool AppParameters::parseParameters(int argc, char* argv[]) { // TODO: command ./cams -d -help don't write to log
@@ -44,14 +45,14 @@ bool AppParameters::parseParameters(int argc, char* argv[]) { // TODO: command .
 		int argument;
 		for (int i = 1; i < argc; i++) {
 			parameter = argv[i];
-			LOGGER.logDebug("AppParameters::parseParameters: parameter = " + parameter);
+			LOGGER->logDebug("AppParameters::parseParameters: parameter = " + parameter);
 			if (parameter.compare("-d") == 0 || parameter.compare("--debug") == 0) {
-				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_DEBUG);
-				LOGGER.logDebug("AppParameters::parseParameters: executedCommand = " + executedCommand);
+				LOGGER->setLogLevel(LOGGER->LOG_LEVEL_DEBUG);
+				LOGGER->logDebug("AppParameters::parseParameters: executedCommand = " + executedCommand);
 			} else if (parameter.compare("--info") == 0) {
-				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_INFO);
+				LOGGER->setLogLevel(LOGGER->LOG_LEVEL_INFO);
 			} else if (parameter.compare("--warning") == 0) {
-				LOGGER.setLogLevel(LOGGER.LOG_LEVEL_WARNING);
+				LOGGER->setLogLevel(LOGGER->LOG_LEVEL_WARNING);
 			} else if (parameter.compare("--help") == 0 || parameter.compare("-h") == 0) {
 				printHelp();
 				return false;
@@ -61,8 +62,8 @@ bool AppParameters::parseParameters(int argc, char* argv[]) { // TODO: command .
 				}
 				i++;
 				parameter = argv[i];
-				argument = TOOLS.getIntFromString(parameter);
-				if (argument >= UCHAR_MAX || !LOGGER.setLogDestination(argument)) {
+				argument = TOOLS->getIntFromString(parameter);
+				if (argument >= UCHAR_MAX || !LOGGER->setLogDestination(argument)) {
 					printError("Parameter --log_destination requires a valid argument, but " + parameter + " was provided");
 					return false;
 				}
@@ -72,9 +73,9 @@ bool AppParameters::parseParameters(int argc, char* argv[]) { // TODO: command .
 				}
 				i++;
 				parameter = argv[i];
-				argument = TOOLS.getIntFromString(parameter);
+				argument = TOOLS->getIntFromString(parameter);
 				if (argument < ULLONG_MAX) {
-					DISPATCHER.setNumberOfDevices(argument);
+					DISPATCHER->setNumberOfDevices(argument);
 				} else {
 					printError("Parameter --number_of_devices requires a valid argument, but " + parameter + " was provided");
 					return false;
@@ -85,7 +86,7 @@ bool AppParameters::parseParameters(int argc, char* argv[]) { // TODO: command .
 				}
 				i++;
 				parameter = argv[i];
-				if (!LOGGER.setLogFileName(parameter)) {
+				if (!LOGGER->setLogFileName(parameter)) {
 					message = "Parameter --log_file_name requires a valid argument, but " + parameter + " was provided";
 				}
 				if (!message.empty()) {
@@ -101,33 +102,31 @@ bool AppParameters::parseParameters(int argc, char* argv[]) { // TODO: command .
 	return true;
 }
 
-AppParameters::AppParameters(const AppParameters&){}
-
 void AppParameters::printError(std::string message) {
-	LOGGER.logDebug("AppParameters::printError: " + message);
-	if (LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE, true)) {
-		LOGGER.logText(message);
+	LOGGER->logDebug("AppParameters::printError: " + message);
+	if (LOGGER->setLogDestination(LOGGER->LOG_DEST_CONSOLE, true)) {
+		LOGGER->logText(message);
 		printHelp();
 	}
 }
 
 void AppParameters::printHelp() {
-	if (LOGGER.setLogDestination(LOGGER.LOG_DEST_CONSOLE, true)) {
-		LOGGER.logText("Usage: cams <options>");
-			LOGGER.logText("<options>:");
-			LOGGER.logText("\t -h --help\t\t\t\tShow help");
-			LOGGER.logText("\t -d --debug\t\t\t\tDebug logging level (the deepest level will be used from the provided ones)");
-			LOGGER.logText("\t --info\t\t\t\t\tInfo logging level (the deepest level will be used from the provided ones)");
-			LOGGER.logText("\t --warning\t\t\t\tWarning logging level (the deepest level will be used from the provided ones)");
-			LOGGER.logText("\t --log_destination destination\t\tdestination = 0 - console, destination = 1 - file (default 1)");
-			LOGGER.logText("\t --log_file_name log_file_name\t\tdefault log_file_name = cams.log, log_file_name can not have '-' as a first character");
-			LOGGER.logText("\t --number_of_devices number_of_devices\tdefault number_of_devices = 200 (it is not recommended to increase), maximum number_of_devices: " + std::to_string(ULLONG_MAX));
-			LOGGER.logText("\t --ip_file_name ip_file_name\t\tdefault ip_file_name = ips.txt, ip_file_name can not have '-' as a first character");
-		if (!LOGGER.setLogDestination(LOGGER.LOG_DEST_FILE, true)) {
-			LOGGER.logError("AppParameters::printHelp: Can not switch destination to file");
+	if (LOGGER->setLogDestination(LOGGER->LOG_DEST_CONSOLE, true)) {
+		LOGGER->logText("Usage: cams <options>");
+			LOGGER->logText("<options>:");
+			LOGGER->logText("\t -h --help\t\t\t\tShow help");
+			LOGGER->logText("\t -d --debug\t\t\t\tDebug logging level (the deepest level will be used from the provided ones)");
+			LOGGER->logText("\t --info\t\t\t\t\tInfo logging level (the deepest level will be used from the provided ones)");
+			LOGGER->logText("\t --warning\t\t\t\tWarning logging level (the deepest level will be used from the provided ones)");
+			LOGGER->logText("\t --log_destination destination\t\tdestination = 0 - console, destination = 1 - file (default 1)");
+			LOGGER->logText("\t --log_file_name log_file_name\t\tdefault log_file_name = cams.log, log_file_name can not have '-' as a first character");
+			LOGGER->logText("\t --number_of_devices number_of_devices\tdefault number_of_devices = 200 (it is not recommended to increase), maximum number_of_devices: " + std::to_string(ULLONG_MAX));
+			LOGGER->logText("\t --ip_file_name ip_file_name\t\tdefault ip_file_name = ips.txt, ip_file_name can not have '-' as a first character");
+		if (!LOGGER->setLogDestination(LOGGER->LOG_DEST_FILE, true)) {
+			LOGGER->logError("AppParameters::printHelp: Can not switch destination to file");
 		}
 	} else {
-		LOGGER.logError("AppParameters::printHelp: Can not switch destination to console");
+		LOGGER->logError("AppParameters::printHelp: Can not switch destination to console");
 	}
 }
 

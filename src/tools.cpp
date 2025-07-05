@@ -7,23 +7,24 @@
 
 #define LOGGER Logger::getInstance()
 
-Tools* toolsInstance = 0;
+std::mutex toolsMutex;
 
 ToolsDestructor::~ToolsDestructor() {
-    LOGGER.logDebug("ToolsDestructor: toolsInstance deleted");
-    delete toolsInstance;
+    LOGGER->logDebug("ToolsDestructor: toolsInstance deleted");
+    //delete toolsInstance;
 }
 
 void ToolsDestructor::initialize(Tools* p) {
     toolsInstance = p;
 }
 
-Tools& Tools::getInstance() {
+Tools* Tools::getInstance() {
+    //std::lock_guard<std::mutex> lock(toolsMutex);
     if (!toolsInstance) {
-        toolsInstance = new Tools();
-        LOGGER.logDebug("Tools: Instance created");
+        toolsInstance = std::unique_ptr<Tools>(new Tools());
+        LOGGER->logDebug("Tools: Instance created");
     }
-    return *toolsInstance;
+    return toolsInstance.get();
 }
 
 bool Tools::checkIP(std::string ip) {

@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <memory>
 
 class AppParameters;
 
@@ -13,16 +14,17 @@ class AppParametersDestructor {
 
 class AppParameters {
     public:
-        static AppParameters& getInstance();
+        AppParameters(AppParameters const&) = delete;
+        AppParameters& operator = (AppParameters const&) = delete;
+        ~AppParameters() {}
+        static AppParameters* getInstance();
         bool parseParameters(int argc, char* argv[]);
     protected:
         AppParameters() {}
-        AppParameters(const AppParameters&);
-        AppParameters& operator = (AppParameters&);
-        ~AppParameters() {}
         friend class AppParametersDestructor;
     private:
         static const char PARAMETERS_NUMBER = 8;
+        inline static std::unique_ptr<AppParameters> appParametersInstance{ nullptr };
         static AppParametersDestructor destructor;
         void
             printError(std::string message)

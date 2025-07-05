@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include <mutex>
 #include "file.h"
 
 class FileText : public File {
@@ -23,6 +24,7 @@ public:
 
 private:
 	std::fstream file;
+	std::mutex fileMutex;
 
 	unsigned char check() override;
 };

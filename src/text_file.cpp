@@ -64,6 +64,7 @@ unsigned char FileText::writeLine(std::string line) {
 	if (getMode() == FILE_IO_IN) {
 		return FILE_ERROR_MODE_NOT_CORRECT;
 	}
+	const std::lock_guard<std::mutex> lock(fileMutex);
 	unsigned char result = check();
 	if (result == FILE_OK) {
 		file << line << std::endl;
@@ -77,6 +78,7 @@ std::string FileText::readLine() {
 		return FILE_READ_ERROR + std::to_string(FILE_ERROR_MODE_NOT_CORRECT);
 	}
 	std::string line;
+	const std::lock_guard<std::mutex> lock(fileMutex);
 	unsigned char result = check();
 	if (result != FILE_OK) {
 		return FILE_READ_ERROR + std::to_string(result);
@@ -86,6 +88,7 @@ std::string FileText::readLine() {
 }
 
 unsigned char FileText::rename(std::string path) {
+	const std::lock_guard<std::mutex> lock(fileMutex);
 	unsigned char result = check();
 	if (result == FILE_OK) {
 		file.close();
@@ -98,6 +101,7 @@ unsigned char FileText::rename(std::string path) {
 }
 
 unsigned char FileText::copyToConsole() {
+	const std::lock_guard<std::mutex> lock(fileMutex);
 	unsigned char result = check();
 	if (result == FILE_OK) {
 		unsigned char oldMode = getMode();
@@ -121,7 +125,9 @@ unsigned char FileText::copyToConsole() {
 }
 
 FileText::~FileText() {
+	const std::lock_guard<std::mutex> lock(fileMutex);
 	if (file.is_open()) {
 		file.close();
+		std::cout << "FileText::~FileText: " << getPath() << " closed" << std::endl;
 	}
 }

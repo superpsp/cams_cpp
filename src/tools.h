@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <memory>
 
 class Tools;
 
@@ -13,14 +14,16 @@ private:
 
 class Tools {
     public:
-        Tools& operator = (Tools&);
+        Tools(Tools const&) = delete;
+        Tools& operator = (Tools const&) = delete;
+        ~Tools() {}
         struct timeZoneShift {
             short int
                 hour
                 , minute;
         };
 
-        static Tools& getInstance();
+        static Tools* getInstance();
         static bool checkIP(std::string ip);
         static std::string
             digitToYesNo(short digit)
@@ -40,10 +43,9 @@ class Tools {
         unsigned long getIntFromString(std::string source);
     protected:
         Tools() {}
-        Tools(const Tools&);
-        ~Tools() {}
     friend class ToolsDestructor;
     private:
+        inline static std::unique_ptr<Tools> toolsInstance{ nullptr };
         static ToolsDestructor destructor;
         static std::string getUUIDPart(const char length);
         static unsigned char getRandomChar();

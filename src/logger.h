@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <memory>
+#include "text_file.h"
 
 class Logger;
 
@@ -13,8 +15,10 @@ class LoggerDestructor {
 
 class Logger {
     public:
-        Logger& operator = (Logger&);
-        static Logger& getInstance();
+        Logger(Logger const&) = delete;
+        Logger& operator = (Logger const&) = delete;
+        ~Logger() {}
+        static Logger* getInstance();
         bool
             setLogFileName(std::string fileName)
             , setLogDestination(char destination)
@@ -36,16 +40,16 @@ class Logger {
             , LOG_DEST_CONSOLE = 0
             , LOG_DEST_FILE = 1;
 protected:
-        Logger() {}
-        Logger(const Logger&);
-        ~Logger() {}
-        friend class LoggerDestructor;
+    Logger() {}
+    friend class LoggerDestructor;
 private:
-    char logLevel
-        , logDestination;
     const std::string LOG_FILE_NAME = "cams.log";
-    std::string logFileName;
-    
+    char logLevel = LOG_LEVEL_ERROR
+        , logDestination = LOG_DEST_FILE;
+    std::string logFileName = LOG_FILE_NAME;
+    inline static std::unique_ptr<Logger> loggerInstance{ nullptr };
+    FileText* logFile = new FileText(logFileName, File::FILE_IO_OUT);
+
     static LoggerDestructor destructor;
     void 
         logPrint(std::string message, std::string level)
