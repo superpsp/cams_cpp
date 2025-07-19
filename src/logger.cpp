@@ -130,3 +130,7 @@ void Logger::logText(std::string message) {
     }
 }
 
+unsigned char Logger::getLogDestination() {
+    return logDestination;
+}
+

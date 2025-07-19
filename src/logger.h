@@ -15,6 +15,13 @@ class LoggerDestructor {
 
 class Logger {
     public:
+        const char
+            LOG_LEVEL_ERROR = 0
+            , LOG_LEVEL_WARNING = 10
+            , LOG_LEVEL_INFO = 20
+            , LOG_LEVEL_DEBUG = 30
+            , LOG_DEST_CONSOLE = 0
+            , LOG_DEST_FILE = 1;
         Logger(Logger const&) = delete;
         Logger& operator = (Logger const&) = delete;
         ~Logger() {}
@@ -31,14 +38,7 @@ class Logger {
             , logInfo(std::string message)
             , logDebug(std::string message)
             , logText(std::string message);
-
-        const char
-            LOG_LEVEL_ERROR = 0
-            , LOG_LEVEL_WARNING = 10
-            , LOG_LEVEL_INFO = 20
-            , LOG_LEVEL_DEBUG = 30
-            , LOG_DEST_CONSOLE = 0
-            , LOG_DEST_FILE = 1;
+        unsigned char getLogDestination();
 protected:
     Logger() {}
     friend class LoggerDestructor;

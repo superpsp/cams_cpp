@@ -8,10 +8,11 @@ std::mutex dispatcherMutex;
 
 DispatcherDestructor::~DispatcherDestructor() {
 	LOGGER->logDebug("DispatcherDestructor::~DispatcherDestructor: Instance deleted");
-	//delete dispatcherInstance;
+	delete dispatcherInstance;
 }
 
 void DispatcherDestructor::initialize(Dispatcher* p) {
+	LOGGER->logDebug("DispatcherDestructor::~initialize: initialized");
 	dispatcherInstance = p;
 }
 
@@ -30,10 +31,14 @@ void Dispatcher::setNumberOfDevices(unsigned long number) {
 
 bool Dispatcher::run() {
 	LOGGER->logDebug("Dispatcher::run: Start");
-	if (source != NULL) {
-		LOGGER->logDebug("Dispatcher::run: Deleting source");
+
+	if (!source->initialize(source->SOURCE_FILE)) { // TODO: add to parameters
+		LOGGER->logError("Dispatcher::run: Can not initialize Source");
 		delete source;
+		return false;
 	}
+
+	delete source;
 	LOGGER->logDebug("Dispatcher::run: Stop");
 	return true;
 }
