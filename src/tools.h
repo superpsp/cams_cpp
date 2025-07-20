@@ -36,11 +36,15 @@ class Tools {
                 , bool returnTail = false)
             , getIpPaddedZeros(std::string ip)
             , getIpRemovedZeros(std::string ip)
+            , getStringIpFromNumeric(unsigned int num)
             , padl(std::string source, size_t resultLength, char character = ' ')
             , padr(std::string source, size_t resultLength, char character = ' ')
             , getTime()
             , getUUID();
-        unsigned long getIntFromString(std::string source);
+        unsigned long
+            getIntFromString(std::string source);
+        unsigned int
+            getNumericIpFromString(const std::string& ip);
     protected:
         Tools() {}
     friend class ToolsDestructor;

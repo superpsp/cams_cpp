@@ -74,7 +74,7 @@ unsigned char FileText::writeLine(std::string line) {
 }
 
 std::string FileText::readLine() {
-	if (getMode() == FILE_IO_OUT) {
+	if (getMode() == FILE_IO_OUT || getMode() == FILE_IO_APPEND) {
 		return FILE_READ_ERROR + std::to_string(FILE_ERROR_MODE_NOT_CORRECT);
 	}
 	std::string line;

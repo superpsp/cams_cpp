@@ -109,6 +109,10 @@ std::string Storage::getNextPassword() {
 }
 
 std::string Storage::getNextKnownIp() {
-	if ()
 	return files[STORAGE_FILE_KNOWN_IP]->readLine();
+}
+
+void Storage::setNextKnownIp(std::string line) {
+	LOGGER->logDebug("Storage::setNextKnownIp: line = " + line);
+	files[STORAGE_FILE_KNOWN_IP]->writeLine(line);
 }

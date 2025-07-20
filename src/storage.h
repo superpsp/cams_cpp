@@ -36,7 +36,8 @@ private:
 		, STORAGE_FILE_USER = 1
 		, STORAGE_FILE_PASSWORD = 2
 		, STORAGE_FILE_KNOWN_IP = 3
-		, STORAGE_FILE_NUMBER = 4;
+		, STORAGE_FILE_LOGIN_QUEUE = 4
+		, STORAGE_FILE_NUMBER = 5;
 	const std::string
 		STORAGE_IP_FILE_NAME = "ips.txt"
 		, STORAGE_USER_FILE_NAME = "users.txt"
@@ -53,7 +54,8 @@ private:
 		, openFile(unsigned char file)
 		, deleteFile(unsigned char file)
 		, openFiles()
-		, switchMode(unsigned char file, unsigned char newMode);
+		, switchMode(unsigned char file, unsigned char newMode)
+		, setNextKnownIp(std::string line);
 	std::string
 		getFileName(unsigned char storageFile)
 		, getNextIp()

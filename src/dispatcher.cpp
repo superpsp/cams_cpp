@@ -1,14 +1,19 @@
 #include "dispatcher.h"
 #include "logger.h"
+#include "storage.h"
 
 #define LOGGER Logger::getInstance()
+#define STORAGE Storage::getInstance()
 
 std::mutex dispatcherMutex;
 
 
 DispatcherDestructor::~DispatcherDestructor() {
-	LOGGER->logDebug("DispatcherDestructor::~DispatcherDestructor: Instance deleted");
+	StorageDestructor* storageDestructor = new StorageDestructor();
+	storageDestructor->initialize(STORAGE);
+	delete storageDestructor;
 	delete dispatcherInstance;
+	LOGGER->logDebug("DispatcherDestructor::~DispatcherDestructor: Instance deleted");
 }
 
 void DispatcherDestructor::initialize(Dispatcher* p) {
@@ -32,13 +37,6 @@ void Dispatcher::setNumberOfDevices(unsigned long number) {
 bool Dispatcher::run() {
 	LOGGER->logDebug("Dispatcher::run: Start");
 
-	if (!source->initialize(source->SOURCE_FILE)) { // TODO: add to parameters
-		LOGGER->logError("Dispatcher::run: Can not initialize Source");
-		delete source;
-		return false;
-	}
-
-	delete source;
 	LOGGER->logDebug("Dispatcher::run: Stop");
 	return true;
 }

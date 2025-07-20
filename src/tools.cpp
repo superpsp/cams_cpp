@@ -73,6 +73,17 @@ std::string Tools::digitToYesNo(short digit) {
     }
 }
 
+std::string Tools::getStringIpFromNumeric(unsigned int num) {
+    std::string ip;
+    for (int i = 3; i >= 0; --i) {
+        if (i != 3) {
+            ip += ".";
+        }
+        ip += std::to_string((num >> (i * 8)) & 0xFF);
+    }
+    return ip;
+}
+
 std::string Tools::digitToTrueFalse(short digit) {
     if (digit < 0 || digit > 1) {
         return "";
@@ -259,6 +270,18 @@ unsigned long Tools::getIntFromString(std::string source) {
         return ULLONG_MAX;
     }
     return (std::stoi(source));
+}
+
+unsigned int Tools::getNumericIpFromString(const std::string& ip) {
+    unsigned long num = 0;
+    std::istringstream ss(ip);
+    std::string token;
+
+    // Split the IP address into octets
+    while (std::getline(ss, token, '.')) {
+        num = (num << 8) | std::stoul(token);
+    }
+    return num;
 }
 
 std::string Tools::getUUIDPart(const char length) {
