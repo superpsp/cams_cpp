@@ -25,6 +25,11 @@ public:
 	static Storage* getInstance();
 
 	void setStorage(unsigned char storage);
+	std::string
+		getNextIp()
+		, getNextUser()
+		, getNextPassword()
+		, getNextKnownIp();
 protected:
 	Storage() {}
 	friend class StorageDestructor;
@@ -57,10 +62,6 @@ private:
 		, switchMode(unsigned char file, unsigned char newMode)
 		, setNextKnownIp(std::string line);
 	std::string
-		getFileName(unsigned char storageFile)
-		, getNextIp()
-		, getNextUser()
-		, getNextPassword()
-		, getNextKnownIp();
+		getFileName(unsigned char storageFile);
 };
 

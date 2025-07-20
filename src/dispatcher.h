@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "source.h"
+#include <list>
+#include "login.h"
 
 class Dispatcher;
 
@@ -26,8 +27,13 @@ protected:
 	friend class DispatcherDestructor;
 private:
 	const unsigned int NUMBER_OF_DEVICES = 200;
-	unsigned int numberOfDevices = NUMBER_OF_DEVICES;
-	Source* source = new Source();
+	unsigned int
+		numberOfDevices = NUMBER_OF_DEVICES
+		, numberOfLogins;
 	inline static std::unique_ptr<Dispatcher> dispatcherInstance{ nullptr };
-	void registerDevice();
+	std::list<Login*> logins;
+
+	void
+		registerDevice()
+		, createLogins();
 };
