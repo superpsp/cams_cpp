@@ -11,6 +11,9 @@ std::mutex dispatcherMutex;
 
 DispatcherDestructor::~DispatcherDestructor() {
 	StorageDestructor* storageDestructor = new StorageDestructor();
+	for (auto login : dispatcherInstance->logins) {
+		delete login;
+	}
 	storageDestructor->initialize(STORAGE);
 	delete storageDestructor;
 	delete dispatcherInstance;
