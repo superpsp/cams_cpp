@@ -34,6 +34,6 @@ private:
 	std::list<Login*> logins;
 
 	void
-		registerDevice()
+		deviceInQueue(unsigned int ip, unsigned int login)
 		, createLogins();
 };

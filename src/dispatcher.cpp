@@ -68,3 +68,6 @@ void Dispatcher::createLogins() {
 	LOGGER->logDebug("Dispatcher::createLogins: numberOfLogins = " + std::to_string(numberOfLogins));
 	LOGGER->logDebug("Dispatcher::createLogins: Stop");
 }
+
+void Dispatcher::deviceInQueue(unsigned int ip, unsigned int login) { // TODO: two queues should be existing: one - for devices from ip.txt, second - from unsucessful brut
+}
