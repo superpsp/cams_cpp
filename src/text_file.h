@@ -10,7 +10,7 @@ public:
 		, FILE_ERROR_NOT_GOOD = 2
 		, FILE_ERROR_MODE_NOT_CORRECT = 3
 		, FILE_ERROR_EXISTS = 5;
-	static const std::string FILE_READ_ERROR = "!!!!!!! 777 File read error: ";
+	const std::string FILE_READ_ERROR = "!!!!!!! 777 File read error: ";
 
 	FileText(std::string path, unsigned char mode);
 	~FileText();

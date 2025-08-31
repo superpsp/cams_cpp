@@ -128,6 +128,6 @@ FileText::~FileText() {
 	const std::lock_guard<std::mutex> lock(fileMutex);
 	if (file.is_open()) {
 		file.close();
-		std::cout << "FileText::~FileText: " << getPath() << " closed" << std::endl;
+		std::cout << "FileText::~FileText: " << getPath() << " closed (remove it)" << std::endl;
 	}
 }

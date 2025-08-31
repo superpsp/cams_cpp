@@ -60,6 +60,10 @@ std::string File::getErrorMessage(unsigned char code) {
 	return result;
 }
 
+auto File::getFileSize(std::string path) {
+	return fs::file_size(path);
+}
+
 unsigned char File::rename(std::string path) {
 	unsigned char result = FILE_OK;
 	if (this->path.compare(path) != 0) {
