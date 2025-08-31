@@ -11,6 +11,7 @@ StorageDestructor::~StorageDestructor() {
 	std::lock_guard<std::mutex> lock(storageMutex);
 	if (storageInstance->storage == storageInstance->STORAGE_FILE) {
 		storageInstance->logins.clear();
+		storageInstance->knownLogins.clear();
 		for (unsigned char i = storageInstance->STORAGE_FILE_IP; i < storageInstance->STORAGE_FILE_NUMBER; i++) {
 			storageInstance->deleteFile(i);
 			LOGGER->logDebug("StorageDestructor::~StorageDestructor: File " + storageInstance->getFileName(i) + " was deleted");
@@ -126,22 +127,13 @@ bool Storage::openFile(unsigned char file) {
 		}
 	}
 	else {
-		if (file != STORAGE_FILE_KNOWN_IP && file != STORAGE_FILE_IP_QUEUE) {
+		if (file != STORAGE_FILE_KNOWN_IP && file != STORAGE_FILE_IP_QUEUE_IN) {
 			LOGGER->logError("Storage::openFile: Can not open required file " + getFileName(file));
 			return false;
 		}
 	}
 	return true;
 }
-
-//void Storage::switchMode(unsigned char file, unsigned char newMode) { // TODO: Use lock in calling method
-//	LOGGER->logDebug("Storage::switchMode: File " + std::to_string(file) + ", mode " + std::to_string(newMode));
-//	if (modes[file] != newMode) {
-//		deleteFile(file);
-//		openFile(file);
-//		LOGGER->logDebug("Storage::switchMode: Mode was switched");
-//	}
-//}
 
 std::string Storage::getFileName(unsigned char storageFile) {
 	LOGGER->logDebug("Storage::getFileName: storageFile " + std::to_string(storageFile));
@@ -186,16 +178,22 @@ void Storage::openFiles() {
 	}
 }
 
-std::string Storage::getIp() {
-	std::string result;
+std::list<std::string> Storage::getIp() {
+	std::list<std::string> result;
 	if (storage == STORAGE_FILE) {
 		if (files[STORAGE_FILE_IP_QUEUE_IN]->getFileSize(getFileName(STORAGE_FILE_IP_QUEUE_IN)) == 0) {
-			result = readLineFromFile(STORAGE_FILE_IP);
+			result.push_back(readLineFromFile(STORAGE_FILE_IP));
 		} else {
-			result = readLineFromFile(STORAGE_FILE_IP_QUEUE_IN);
+			std::string line = readLineFromFile(STORAGE_FILE_IP_QUEUE_IN);
+			result = TOOLS->split(line, IP_QUEUE_SPLITTER);
 		}
 	}
-	LOGGER->logDebug("Storage::getIp: IP = " + result);
+	if (result.size() > 0) {
+		LOGGER->logDebug("Storage::getIp: IP = " + result.front());
+		if (result.size() > 1) {
+			LOGGER->logDebug("Storage::getIp: Login = " + result.back());
+		}
+	}
 	return result;
 }
 
@@ -218,9 +216,4 @@ Login* Storage::getKnownlogin(unsigned long ip) {
 		return element->second;
 	}
 	return nullptr;
-}
-
-void Storage::setNextKnownIp(std::string line) {
-	LOGGER->logDebug("Storage::setNextKnownIp: line = " + line);
-	files[STORAGE_FILE_KNOWN_IP]->writeLine(line);
 }

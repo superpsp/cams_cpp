@@ -1,7 +1,6 @@
 #include "dispatcher.h"
 #include "logger.h"
 #include "storage.h"
-#include "text_file.h"
 
 #define LOGGER Logger::getInstance()
 #define STORAGE Storage::getInstance()
@@ -11,7 +10,6 @@ std::mutex dispatcherMutex;
 
 DispatcherDestructor::~DispatcherDestructor() {
 	StorageDestructor* storageDestructor = new StorageDestructor();
-	//dispatcherInstance->deleteLogins();
 	storageDestructor->initialize(STORAGE);
 	delete storageDestructor;
 	delete dispatcherInstance;
@@ -38,26 +36,7 @@ void Dispatcher::setNumberOfDevices(unsigned long number) {
 
 bool Dispatcher::run() {
 	LOGGER->logDebug("Dispatcher::run: Start");
-	//createLogins();
+	// TODO: decide on a starategy: if it is for brute only, or other functions too
 	LOGGER->logDebug("Dispatcher::run: Stop");
 	return true;
 }
-
-//void Dispatcher::createLogins() {
-//	LOGGER->logDebug("Dispatcher::createLogins: Start");
-//	logins = STORAGE->getlogins();
-//	LOGGER->logDebug("Dispatcher::createLogins: Stop");
-//}
-//
-//void Dispatcher::deleteLogins() {
-//	LOGGER->logDebug("Dispatcher::deleteLogins: Start");
-//	for (Login* login : logins) {
-//		LOGGER->logDebug("Dispatcher::deleteLogins: Login " + std::to_string(login->getId()) + " " + login->getUser() + " " + login->getPassword() + " was deleted");
-//		delete login;
-//	}
-//	logins.clear();
-//	LOGGER->logDebug("Dispatcher::deleteLogins: Stop");
-//}
-
-//void Dispatcher::deviceInQueue(DeviceProto* device) {
-//}

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <list>
 
 class Tools;
 
@@ -41,6 +42,7 @@ class Tools {
             , padr(std::string source, size_t resultLength, char character = ' ')
             , getTime()
             , getUUID();
+        static std::list<std::string> split(std::string source, std::string splitter);
         unsigned long
             getIntFromString(std::string source);
         unsigned int

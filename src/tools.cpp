@@ -84,6 +84,17 @@ std::string Tools::getStringIpFromNumeric(unsigned int num) {
     return ip;
 }
 
+std::list<std::string> Tools::split(std::string source, std::string splitter) {
+    std::list<std::string> result;
+    std::string::size_type position = source.find(splitter);
+    if (position != std::string::npos) {
+        result.push_back(source.substr(0, position));
+        result.push_back(source.substr(position + 1));
+    } else {
+        return std::list<std::string>();
+    }
+}
+
 std::string Tools::digitToTrueFalse(short digit) {
     if (digit < 0 || digit > 1) {
         return "";

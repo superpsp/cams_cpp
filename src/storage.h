@@ -28,9 +28,10 @@ public:
 	static Storage* getInstance();
 
 	void setStorage(unsigned char storage);
-	std::string getIp();
+	std::list<std::string> getIp();
 	Login* getKnownlogin(unsigned long ip);
 	Login* getlogin(unsigned int id);
+	const std::string IP_QUEUE_SPLITTER = ":";
 protected:
 	Storage() {}
 	friend class StorageDestructor;
@@ -62,9 +63,7 @@ private:
 		, deleteFile(unsigned char file)
 		, openFiles()
 		, createLogins()
-		, createKnownLogins()
-		//, switchMode(unsigned char file, unsigned char newMode)
-		, setNextKnownIp(std::string line);
+		, createKnownLogins();
 	std::string
 		getFileName(unsigned char storageFile)
 		, readLineFromFile(unsigned char storageFile);
