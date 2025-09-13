@@ -1,20 +1,34 @@
 #include "storage.h"
 #include "logger.h"
 #include "tools.h"
+#include "dispatcher.h"
 
 #define LOGGER Logger::getInstance()
 #define TOOLS Tools::getInstance()
+#define DISPATCHER Dispatcher::getInstance()
 
 std::mutex storageMutex;
 
 StorageDestructor::~StorageDestructor() {
 	std::lock_guard<std::mutex> lock(storageMutex);
-	if (storageInstance->storage == storageInstance->STORAGE_FILE) {
-		storageInstance->logins.clear();
+	if (storageInstance->isFileKnownLoginsExisting) {
 		storageInstance->knownLogins.clear();
+	}
+	LOGGER->logDebug("StorageDestructor::~StorageDestructor: knownLogins were cleared");
+
+	for (auto it = storageInstance->logins.begin(); it != storageInstance->logins.end(); it++) {
+		delete it->second;
+	}
+	storageInstance->logins.clear();
+	LOGGER->logDebug("StorageDestructor::~StorageDestructor: logins were cleared");
+
+	if (storageInstance->storage == storageInstance->STORAGE_FILE) {
 		for (unsigned char i = storageInstance->STORAGE_FILE_IP; i < storageInstance->STORAGE_FILE_NUMBER; i++) {
-			storageInstance->deleteFile(i);
-			LOGGER->logDebug("StorageDestructor::~StorageDestructor: File " + storageInstance->getFileName(i) + " was deleted");
+			if (i != storageInstance->STORAGE_FILE_USER && i != storageInstance->STORAGE_FILE_PASSWORD) {
+				LOGGER->logDebug("StorageDestructor::~StorageDestructor: File " + storageInstance->getFileName(i) + " deleting");
+				storageInstance->deleteFile(i);
+				LOGGER->logDebug("StorageDestructor::~StorageDestructor: File " + storageInstance->getFileName(i) + " was deleted");
+			}
 		}
 	}
 	delete storageInstance;
@@ -44,6 +58,7 @@ void Storage::initialize() {
 	LOGGER->logDebug("Storage::initialize: Start");
 	if (storage == STORAGE_FILE) {
 		openFiles();
+		createLogins();
 		if (isFileKnownLoginsExisting) {
 			createKnownLogins();
 		}
@@ -71,12 +86,19 @@ void Storage::createKnownLogins() {
 		if (ipNumeric != 0 && !user.empty() && !password.empty()) {
 			for (auto login = logins.begin(); login != logins.end(); login++) {
 				if (user.compare(login->second->getUser()) == 0 && password.compare(login->second->getPassword()) == 0) {
-					LOGGER->logDebug("Storage::createKnownLogins: Found user = " + user + ", password = " + password + ", ipNumeric = " + std::to_string(ipNumeric));
 					knownLogins[ipNumeric] = login->second;
+					LOGGER->logDebug("Storage::createKnownLogins: Found user = "
+						+ login->second->getUser() + ", password = " + login->second->getPassword() + ", ipNumeric = " + std::to_string(ipNumeric));
 					break;
 				}
 			}
 		}
+	}
+	deleteFile(STORAGE_FILE_KNOWN_IP);
+	modes[STORAGE_FILE_KNOWN_IP] = File::FILE_IO_OUT;
+	openFile(STORAGE_FILE_KNOWN_IP);
+	for (auto it = knownLogins.begin(); it != knownLogins.end(); it++) { // TODO: remove and uncomment in Device
+		files[STORAGE_FILE_KNOWN_IP]->writeLine("i:" + TOOLS->getStringIpFromNumeric(it->first) + "u:" + it->second->getUser() + "p:" + it->second->getPassword());
 	}
 }
 
@@ -95,21 +117,31 @@ void Storage::createLogins() {
 		users.push_back(user);
 		user = readLineFromFile(STORAGE_FILE_USER);
 	}
+	deleteFile(STORAGE_FILE_USER);
+	LOGGER->logDebug("Storage::createLogins: File " + storageInstance->getFileName(STORAGE_FILE_USER) + " was deleted");
+
 	password = readLineFromFile(STORAGE_FILE_PASSWORD);
 	while (!password.empty()) {
 		LOGGER->logDebug("Storage::createLogins: password " + password);
 		passwords.push_back(password);
 		password = readLineFromFile(STORAGE_FILE_PASSWORD);
 	}
-	//if (users.empty() || passwords.empty()) {} // TODO: Trigger event for Dispatcher to abort
-	for (; !users.empty(); users.pop_front()) {
-		user = users.front();
-		for (; !passwords.empty(); passwords.pop_front()) {
-			password = passwords.front();
-			LOGGER->logDebug("Storage::getlogins: Creating Login: " + user + ", " + password);
-			logins[id] = new Login(id, user, password);
-			id++;
+	deleteFile(STORAGE_FILE_PASSWORD);
+	LOGGER->logDebug("Storage::createLogins: File " + storageInstance->getFileName(STORAGE_FILE_PASSWORD) + " was deleted");
+
+	if (!users.empty() && !passwords.empty()) {
+		for (auto itUsers = users.begin(); itUsers != users.end(); itUsers++) {
+			user = *itUsers;
+			for (auto itPasswords = passwords.begin(); itPasswords != passwords.end(); itPasswords++) {
+				password = *itPasswords;
+				LOGGER->logDebug("Storage::getlogins: Creating Login: " + user + ", " + password);
+				logins[id] = new Login(id, user, password);
+				id++;
+			}
 		}
+	} else {
+		LOGGER->logDebug("Storage::createLogins: Can not get Users or Passwords");
+		DISPATCHER->stopBruteDevices();
 	}
 }
 
@@ -122,7 +154,7 @@ bool Storage::openFile(unsigned char file) {
 	unsigned char result = files[file]->open();
 	if (result == File::FILE_OK) {
 		LOGGER->logDebug("Storage::openFile: File " + getFileName(file) + " was opened");
-		if (file != STORAGE_FILE_KNOWN_IP) {
+		if (file == STORAGE_FILE_KNOWN_IP) {
 			isFileKnownLoginsExisting = true;
 		}
 	}
@@ -172,20 +204,27 @@ void Storage::openFiles() {
 		} else {
 			modes[i] = File::FILE_IO_IN;
 		}
-		if (!openFile(i)) {
-			break; // TODO: Trigger event for Dispatcher to abort
+		if (!openFile(i) && i != STORAGE_FILE_KNOWN_IP && i != STORAGE_FILE_IP_QUEUE_IN) {
+			DISPATCHER->stopBruteDevices();
+			break;
 		}
 	}
 }
 
 std::list<std::string> Storage::getIp() {
+	std::string line;
 	std::list<std::string> result;
 	if (storage == STORAGE_FILE) {
-		if (files[STORAGE_FILE_IP_QUEUE_IN]->getFileSize(getFileName(STORAGE_FILE_IP_QUEUE_IN)) == 0) {
-			result.push_back(readLineFromFile(STORAGE_FILE_IP));
+		if (files[STORAGE_FILE_IP_QUEUE_IN]->getFileSize(getFileName(STORAGE_FILE_IP_QUEUE_IN)) != 0) {
+			line = readLineFromFile(STORAGE_FILE_IP_QUEUE_IN);
+			if (!line.empty()) {
+				result = TOOLS->split(line, IP_QUEUE_SPLITTER);
+			}
 		} else {
-			std::string line = readLineFromFile(STORAGE_FILE_IP_QUEUE_IN);
-			result = TOOLS->split(line, IP_QUEUE_SPLITTER);
+			line = readLineFromFile(STORAGE_FILE_IP);
+			if (!line.empty()) {
+				result.push_back(line);
+			}
 		}
 	}
 	if (result.size() > 0) {
@@ -193,14 +232,18 @@ std::list<std::string> Storage::getIp() {
 		if (result.size() > 1) {
 			LOGGER->logDebug("Storage::getIp: Login = " + result.back());
 		}
+	} else {
+		LOGGER->logDebug("Storage::getIp: Can not get IP and Login ");
 	}
 	return result;
 }
 
 Login* Storage::getlogin(unsigned int id) {
+	LOGGER->logDebug("Storage::getlogin: id = " + std::to_string(id));
 	if (storage == STORAGE_FILE) {
 		if (logins.empty()) {
 			createLogins();
+			LOGGER->logDebug("Storage::getlogin: Logins were created ");
 		}
 		if (auto element = logins.find(id); element != logins.end()) {
 			LOGGER->logDebug("Storage::getlogin: user = " + element->second->getUser() + ", password = " + element->second->getPassword());
@@ -216,4 +259,10 @@ Login* Storage::getKnownlogin(unsigned long ip) {
 		return element->second;
 	}
 	return nullptr;
+}
+
+void Storage::setKnownlogin(unsigned long ip, Login* login) {
+	if (storage == STORAGE_FILE) {
+		files[STORAGE_FILE_KNOWN_IP]->writeLine("i:" + TOOLS->getStringIpFromNumeric(ip) + "u:" + login->getUser() + "p:" + login->getPassword());
+	}
 }

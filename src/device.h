@@ -2,16 +2,25 @@
 #include "login.h"
 class Device {
 	public:
-		void brute();
+		Device(unsigned char mode);
+		void stop();
+		unsigned long getIp() const;
+		unsigned char getMode();
+		~Device();
+		static const unsigned char MODE_BRUT = 0;
 	protected:
-		unsigned long ip = 0;
+			unsigned long ip = 0;
 	private:
 		Login* login;
 		bool
 			deviceFromQueueFlag = false
 			, knownLoginFlag = false;
 		void
-			getIp()
-			, createConnection();
+			setIp()
+			, brute()
+			, openConnection();
+		unsigned int connection;
+		bool isAlive = true;
+		unsigned char mode;
 };
 

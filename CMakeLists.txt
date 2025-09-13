@@ -24,7 +24,8 @@ add_executable (
 	"src/text_file.h" "src/text_file.cpp"
 	"src/dispatcher.h" "src/dispatcher.cpp"
 	"src/storage.h" "src/storage.cpp"
-	"src/login.h" "src/login.cpp")
+	"src/login.h" "src/login.cpp"
+	"src/device.h" "src/device.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET cams PROPERTY CXX_STANDARD 20)

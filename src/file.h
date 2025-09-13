@@ -20,7 +20,7 @@ public:
 		, FILE_ERROR_RENAME = 7;
 	const std::string FILE_ERROR_UNSUPPORTED = " is unsupported error";
 
-	intmax_t getFileSize(std::string path);
+	uintmax_t getFileSize(std::string path);
 
 	~File();
 

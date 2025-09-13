@@ -1,17 +1,14 @@
+#include <mutex>
 #include <chrono>
 #include <random>
 #include <sstream>
 #include <climits>
 #include "tools.h"
-#include "logger.h"
-
-#define LOGGER Logger::getInstance()
 
 std::mutex toolsMutex;
 
 ToolsDestructor::~ToolsDestructor() {
-    LOGGER->logDebug("ToolsDestructor: toolsInstance deleted");
-    //delete toolsInstance;
+    delete toolsInstance;
 }
 
 void ToolsDestructor::initialize(Tools* p) {
@@ -22,7 +19,6 @@ Tools* Tools::getInstance() {
     //std::lock_guard<std::mutex> lock(toolsMutex);
     if (!toolsInstance) {
         toolsInstance = std::unique_ptr<Tools>(new Tools());
-        LOGGER->logDebug("Tools: Instance created");
     }
     return toolsInstance.get();
 }
@@ -90,9 +86,8 @@ std::list<std::string> Tools::split(std::string source, std::string splitter) {
     if (position != std::string::npos) {
         result.push_back(source.substr(0, position));
         result.push_back(source.substr(position + 1));
-    } else {
-        return std::list<std::string>();
     }
+    return result;
 }
 
 std::string Tools::digitToTrueFalse(short digit) {

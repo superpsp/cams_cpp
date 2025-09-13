@@ -30,6 +30,7 @@ public:
 	void setStorage(unsigned char storage);
 	std::list<std::string> getIp();
 	Login* getKnownlogin(unsigned long ip);
+	void setKnownlogin(unsigned long ip, Login* login);
 	Login* getlogin(unsigned int id);
 	const std::string IP_QUEUE_SPLITTER = ":";
 protected:

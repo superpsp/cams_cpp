@@ -7,6 +7,7 @@ class Login {
 		std::string
 			getUser()
 			, getPassword();
+		~Login();
 	private:
 		std::string
 			user

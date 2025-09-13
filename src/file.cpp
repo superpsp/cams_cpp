@@ -60,8 +60,11 @@ std::string File::getErrorMessage(unsigned char code) {
 	return result;
 }
 
-auto File::getFileSize(std::string path) {
-	return fs::file_size(path);
+uintmax_t File::getFileSize(std::string path) {
+	if (fs::exists(path)) {
+		return fs::file_size(path);
+	}
+	return 0;
 }
 
 unsigned char File::rename(std::string path) {

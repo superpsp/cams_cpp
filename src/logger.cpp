@@ -8,7 +8,7 @@ std::mutex logMutex;
 
 LoggerDestructor::~LoggerDestructor() {
     delete loggerInstance->logFile;
-    //delete loggerInstance;
+    delete loggerInstance;
 }
 
 void LoggerDestructor::initialize(Logger* p) {

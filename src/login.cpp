@@ -21,3 +21,7 @@ std::string Login::getPassword() {
 std::string Login::getUser() {
 	return user;
 }
+
+Login::~Login() {
+	LOGGER->logDebug("Login::Login: id = " + std::to_string(id) + ", user = " + user + ", password = " + password + " was deleted");
+}
