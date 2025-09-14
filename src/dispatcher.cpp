@@ -2,6 +2,7 @@
 #include "logger.h"
 #include "storage.h"
 #include "tools.h"
+#include "dhnetsdk.h"
 
 #define LOGGER Logger::getInstance()
 #define STORAGE Storage::getInstance()
@@ -27,6 +28,10 @@ Dispatcher* Dispatcher::getInstance() {
 	if (!dispatcherInstance) {
 		dispatcherInstance = std::unique_ptr<Dispatcher>(new Dispatcher());
 		LOGGER->logDebug("Dispatcher::getInstance: Instance created");
+		//if (!CLIENT_Init(disConnect, 0)) {
+		//	int error = logSDKError("Can't init SDK.");
+		//	return 1;
+		//}
 	}
 	return dispatcherInstance.get();
 }
