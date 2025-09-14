@@ -1,4 +1,3 @@
-#include <iostream>
 #include "logger.h"
 #include "tools.h"
 
@@ -8,7 +7,7 @@ std::mutex logMutex;
 
 LoggerDestructor::~LoggerDestructor() {
     delete loggerInstance->logFile;
-    delete loggerInstance;
+    //delete loggerInstance;
 }
 
 void LoggerDestructor::initialize(Logger* p) {

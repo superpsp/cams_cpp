@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <iostream>
 #include "text_file.h"
 
 class Logger;

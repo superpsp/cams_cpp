@@ -2,6 +2,10 @@
 #include <string>
 #include <memory>
 #include <list>
+#include <chrono>
+#include <random>
+#include <sstream>
+#include <climits>
 
 class Tools;
 

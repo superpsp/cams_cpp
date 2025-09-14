@@ -1,4 +1,3 @@
-#include <algorithm>
 #include "dispatcher.h"
 #include "logger.h"
 #include "storage.h"
@@ -14,7 +13,7 @@ DispatcherDestructor::~DispatcherDestructor() {
 	StorageDestructor* storageDestructor = new StorageDestructor();
 	storageDestructor->initialize(STORAGE);
 	delete storageDestructor;
-	delete dispatcherInstance;
+	//delete dispatcherInstance;
 	LOGGER->logDebug("DispatcherDestructor::~DispatcherDestructor: Instance deleted");
 }
 

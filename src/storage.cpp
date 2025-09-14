@@ -31,7 +31,7 @@ StorageDestructor::~StorageDestructor() {
 			}
 		}
 	}
-	delete storageInstance;
+	//delete storageInstance;
 	LOGGER->logDebug("StorageDestructor::~StorageDestructor: Instance deleted");
 }
 
@@ -97,9 +97,6 @@ void Storage::createKnownLogins() {
 	deleteFile(STORAGE_FILE_KNOWN_IP);
 	modes[STORAGE_FILE_KNOWN_IP] = File::FILE_IO_OUT;
 	openFile(STORAGE_FILE_KNOWN_IP);
-	for (auto it = knownLogins.begin(); it != knownLogins.end(); it++) { // TODO: remove and uncomment in Device
-		files[STORAGE_FILE_KNOWN_IP]->writeLine("i:" + TOOLS->getStringIpFromNumeric(it->first) + "u:" + it->second->getUser() + "p:" + it->second->getPassword());
-	}
 }
 
 void Storage::createLogins() {

@@ -54,9 +54,9 @@ void Device::setIp() {
 void Device::openConnection() {
 	LOGGER->logDebug("Device::openConnection: ip = " + TOOLS->getStringIpFromNumeric(ip));
 	connection = 0;
-	//if (connection != 0) {
-	//	STORAGE->setKnownlogin(ip, login);
-	//}
+	if (connection != 0) {
+		STORAGE->setKnownlogin(ip, login);
+	}
 }
 
 unsigned long Device::getIp() const {

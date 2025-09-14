@@ -2,6 +2,7 @@
 #include <string>
 #include <list>
 #include <memory>
+#include <algorithm>
 #include "device.h"
 
 class Dispatcher;

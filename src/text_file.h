@@ -2,6 +2,7 @@
 #include <fstream>
 #include <mutex>
 #include "file.h"
+#include <iostream>
 
 class FileText : public File {
 public:

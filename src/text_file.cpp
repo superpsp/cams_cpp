@@ -1,4 +1,3 @@
-#include <iostream>
 #include "text_file.h"
 
 FileText::FileText(std::string path, unsigned char mode) {
@@ -128,6 +127,5 @@ FileText::~FileText() {
 	const std::lock_guard<std::mutex> lock(fileMutex);
 	if (file.is_open()) {
 		file.close();
-		std::cout << "FileText::~FileText: " << getPath() << " closed (remove it)" << std::endl;
 	}
 }

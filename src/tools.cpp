@@ -1,14 +1,10 @@
 #include <mutex>
-#include <chrono>
-#include <random>
-#include <sstream>
-#include <climits>
 #include "tools.h"
 
 std::mutex toolsMutex;
 
 ToolsDestructor::~ToolsDestructor() {
-    delete toolsInstance;
+    //delete toolsInstance;
 }
 
 void ToolsDestructor::initialize(Tools* p) {
@@ -16,7 +12,7 @@ void ToolsDestructor::initialize(Tools* p) {
 }
 
 Tools* Tools::getInstance() {
-    //std::lock_guard<std::mutex> lock(toolsMutex);
+    std::lock_guard<std::mutex> lock(toolsMutex);
     if (!toolsInstance) {
         toolsInstance = std::unique_ptr<Tools>(new Tools());
     }
