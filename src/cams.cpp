@@ -2,6 +2,7 @@
 #include "parameters.h"
 #include "tools.h"
 #include "dispatcher.h"
+#include "sdk_abstract.h"
 
 #define TOOLS Tools::getInstance()
 #define LOGGER Logger::getInstance()
@@ -10,6 +11,7 @@
 
 int main(int argc, char* argv[]) {
 	if (APPPARAMETERS->parseParameters(argc, argv)) {
+		DISPATCHER->setVendor(SdkAbstract::SDK_VENDOR_DAHUA);
 		DISPATCHER->bruteDevices();
 	}
 	LOGGER->logDebug("main: deleting AppParameters");

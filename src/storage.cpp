@@ -2,6 +2,7 @@
 #include "logger.h"
 #include "tools.h"
 #include "dispatcher.h"
+#include "sdk_abstract.h"
 
 #define LOGGER Logger::getInstance()
 #define TOOLS Tools::getInstance()

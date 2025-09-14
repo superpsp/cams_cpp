@@ -16,26 +16,29 @@ private:
 };
 
 class Dispatcher {
-public:
-	Dispatcher(Dispatcher const&) = delete;
-	Dispatcher& operator = (Dispatcher const&) = delete;
-	~Dispatcher() {}
-	static Dispatcher* getInstance();
-	void
-		setNumberOfDevices(unsigned long number)
-		, bruteDevices()
-		, stopBruteDevices()
-		, registerDevice(Device* device)
-		, deleteDevice(Device* device);
-protected:
-	Dispatcher() {}
-	friend class DispatcherDestructor;
-private:
-	const unsigned int NUMBER_OF_DEVICES = 5;
-	unsigned char mode;
-	unsigned int numberOfDevices = NUMBER_OF_DEVICES; // TODO: move to parameters
-	inline static std::unique_ptr<Dispatcher> dispatcherInstance{ nullptr };
-	std::list<Device*> devices;
-	bool toContinueBrute = true;
-	void createDevice(unsigned char mode);
+	public:
+		Dispatcher(Dispatcher const&) = delete;
+		Dispatcher& operator = (Dispatcher const&) = delete;
+		~Dispatcher() {}
+		static Dispatcher* getInstance();
+		void
+			setNumberOfDevices(unsigned long number)
+			, bruteDevices()
+			, stopBruteDevices()
+			, registerDevice(Device* device)
+			, deleteDevice(Device* device)
+			, setVendor(unsigned char vendor);
+	protected:
+		Dispatcher() {}
+		friend class DispatcherDestructor;
+	private:
+		const unsigned int NUMBER_OF_DEVICES = 5;
+		unsigned char
+			mode
+			, vendor;
+		unsigned int numberOfDevices = NUMBER_OF_DEVICES; // TODO: move to parameters
+		inline static std::unique_ptr<Dispatcher> dispatcherInstance{ nullptr };
+		std::list<Device*> devices;
+		bool toContinueBrute = true;
+		void createDevice(unsigned char vendor, unsigned char mode);
 };

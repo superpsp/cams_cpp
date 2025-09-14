@@ -44,6 +44,10 @@ void Dispatcher::setNumberOfDevices(unsigned long number) {
 	}
 }
 
+void Dispatcher::setVendor(unsigned char vendor) {
+	this->vendor = vendor;
+}
+
 void Dispatcher::registerDevice(Device* device) {
 	LOGGER->logDebug("Dispatcher::registerDevice: " + std::to_string((unsigned long long)device));
 	devices.push_back(device);
@@ -54,7 +58,7 @@ void Dispatcher::bruteDevices() {
 	while (toContinueBrute || !devices.empty()) {
 		if (devices.size() < numberOfDevices && toContinueBrute) {
 			LOGGER->logInfo("Dispatcher::bruteDevices: devices in list: " + std::to_string(devices.size()) + ", creating new");
-			createDevice(Device::MODE_BRUT);
+			createDevice(vendor, Device::MODE_BRUT);
 		}
 		else {
 			LOGGER->logDebug("Dispatcher::bruteDevices: devices in list: " + std::to_string(devices.size()) + ", toContinueBrute = " + std::to_string(toContinueBrute));
@@ -88,12 +92,12 @@ void Dispatcher::deleteDevice(Device* device) {
 	LOGGER->logDebug("Dispatcher::deleteDevice: devices in list: " + std::to_string(devices.size()) + ", toContinueBrute = " + std::to_string(toContinueBrute));
 }
 
-void Dispatcher::createDevice(unsigned char mode) {
+void Dispatcher::createDevice(unsigned char vendor, unsigned char mode) {
 	LOGGER->logDebug("Dispatcher::createDevice: mode =  " + std::to_string(mode));
 	switch (mode) { // TODO: For other modes
 		case Device::MODE_BRUT:
 			if (toContinueBrute) {
-				Device* device = new Device(mode);
+				Device* device = new Device(vendor, mode);
 				LOGGER->logDebug("Dispatcher::createDevice: device " + std::to_string((unsigned long long)device));
 			}
 			break;

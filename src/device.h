@@ -2,7 +2,7 @@
 #include "login.h"
 class Device {
 	public:
-		Device(unsigned char mode);
+		Device(unsigned char vendor, unsigned char mode);
 		void stop();
 		unsigned long getIp() const;
 		unsigned char getMode();
@@ -21,6 +21,8 @@ class Device {
 			, openConnection();
 		unsigned int connection;
 		bool isAlive = true;
-		unsigned char mode;
+		unsigned char
+			vendor
+			, mode;
 };
 

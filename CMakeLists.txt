@@ -14,6 +14,10 @@ project (cams LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+message(PROJECT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
+find_library(DHNETSDK_LIB libdhnetsdk.so PATHS /usr/lib)
+message(DHNETSDK_LIB="${DHNETSDK_LIB}")
+
 # Add source to this project's executable.
 add_executable (
 	cams "src/cams.cpp"
@@ -25,7 +29,13 @@ add_executable (
 	"src/dispatcher.h" "src/dispatcher.cpp"
 	"src/storage.h" "src/storage.cpp"
 	"src/login.h" "src/login.cpp"
-	"src/device.h" "src/device.cpp")
+	"src/device.h" "src/device.cpp"
+	"src/sdk_abstract.h" "src/sdk_abstract.cpp"
+	"src/sdk_dahua.h" "src/sdk_dahua.cpp"
+	"src/sdk_abstract_login.h" "src/sdk_abstract_login.cpp"
+	"src/sdk_dahua_login.h" "src/sdk_dahua_login.cpp")
+
+target_link_libraries(cams PRIVATE "${DHNETSDK_LIB}")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET cams PROPERTY CXX_STANDARD 20)

@@ -9,9 +9,10 @@
 #define TOOLS Tools::getInstance()
 #define DISPATCHER Dispatcher::getInstance()
 
-Device::Device(unsigned char mode) {
+Device::Device(unsigned char vendor, unsigned char mode) {
 	LOGGER->logDebug("Device::Device: Start " + std::to_string((unsigned long long)this) + ", mode = " + std::to_string(mode));
 	DISPATCHER->registerDevice(this);
+	this->vendor = vendor;
 	this->mode = mode;
 	switch (mode) { // TODO: For other modes
 	case MODE_BRUT:
